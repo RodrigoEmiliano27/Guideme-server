@@ -1,8 +1,25 @@
 {
   "version": 2,
-  "dgSpecHash": "TYydsyurUMSkiii3yWZKdHBQKJUpCbeJpoC82WN5i6AgFWuOgTQ0z/WQzVw+v4pLpRy7SdNLM5uPwgXfJv3HNw==",
+  "dgSpecHash": "13tg0FKEjHF2Ou4aiKBl7nxRqaimOLVRFedPRSciyEzi6QQGsJOECGN5BYZi6+I+AnWFuYJ99Wr+MJoH6K80Ig==",
   "success": true,
-  "projectFilePath": "C:\\Users\\081190004\\Source\\Repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\GuidemeServerMVC.csproj",
-  "expectedPackageFiles": [],
-  "logs": []
+  "projectFilePath": "C:\\Users\\081190015\\Source\\Repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\GuidemeServerMVC.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.21\\microsoft.aspnetcore.authentication.jwtbearer.6.0.21.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.identitymodel.jsonwebtokens\\6.10.0\\microsoft.identitymodel.jsonwebtokens.6.10.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.identitymodel.logging\\6.10.0\\microsoft.identitymodel.logging.6.10.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.identitymodel.protocols\\6.10.0\\microsoft.identitymodel.protocols.6.10.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.identitymodel.protocols.openidconnect\\6.10.0\\microsoft.identitymodel.protocols.openidconnect.6.10.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\microsoft.identitymodel.tokens\\6.10.0\\microsoft.identitymodel.tokens.6.10.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\system.identitymodel.tokens.jwt\\6.10.0\\system.identitymodel.tokens.jwt.6.10.0.nupkg.sha512",
+    "C:\\Users\\081190015\\.nuget\\packages\\system.security.cryptography.cng\\4.5.0\\system.security.cryptography.cng.4.5.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "Undefined",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "Problema ao ler o arquivo de cache C:\\Users\\081190015\\Source\\Repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\obj\\project.nuget.cache: Invalid property identifier character: <. Path 'version', line 3, position 0."
+    }
+  ]
 }
