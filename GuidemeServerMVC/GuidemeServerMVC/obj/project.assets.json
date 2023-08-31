@@ -8,25 +8,25 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\081190015\\.nuget\\packages\\": {},
+    "C:\\Users\\081190004\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {},
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\GuidemeServerMVC.csproj",
+      "projectUniqueName": "C:\\Users\\081190004\\Source\\Repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\GuidemeServerMVC.csproj",
       "projectName": "GuidemeServerMVC",
-      "projectPath": "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\GuidemeServerMVC.csproj",
-      "packagesPath": "C:\\Users\\081190015\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\obj\\",
+      "projectPath": "C:\\Users\\081190004\\Source\\Repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\GuidemeServerMVC.csproj",
+      "packagesPath": "C:\\Users\\081190004\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\081190004\\Source\\Repos\\Guideme-server\\GuidemeServerMVC\\GuidemeServerMVC\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\081190015\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\081190004\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
