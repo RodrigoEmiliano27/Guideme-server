@@ -1,4 +1,4 @@
-namespace GuideMeServerMVC.Models
+namespace GuidemeServerMVC.Models
 {
     public class ErrorViewModel
     {

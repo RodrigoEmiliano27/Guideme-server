@@ -1,8 +1,8 @@
-﻿using GuideMeServerMVC.Models;
+﻿using GuidemeServerMVC.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace GuideMeServerMVC.Controllers
+namespace GuidemeServerMVC.Controllers
 {
     public class HomeController : Controller
     {
