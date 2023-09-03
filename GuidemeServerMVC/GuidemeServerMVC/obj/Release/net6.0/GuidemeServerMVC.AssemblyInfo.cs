@@ -11,12 +11,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("GuidemeServerMVC")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("GuideMeServerMVC")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
 [assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
-[assembly: System.Reflection.AssemblyProductAttribute("GuidemeServerMVC")]
-[assembly: System.Reflection.AssemblyTitleAttribute("GuidemeServerMVC")]
+[assembly: System.Reflection.AssemblyProductAttribute("GuideMeServerMVC")]
+[assembly: System.Reflection.AssemblyTitleAttribute("GuideMeServerMVC")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 
 // Gerado pela classe WriteCodeFragment do MSBuild.

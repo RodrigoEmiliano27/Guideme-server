@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\GuidemeServerMVC",
+    "\\GuidemeServerMVC\\GuidemeServerMVC"
   ],
-  "SelectedNode": "\\GuidemeServerMVC.sln",
+  "SelectedNode": "\\GuidemeServerMVC\\GuidemeServerMVC.sln",
   "PreviewInSolutionExplorer": false
 }
