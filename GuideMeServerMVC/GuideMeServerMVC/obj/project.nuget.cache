@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Ftda2ovZ2pIu9eAkvMXv2XTvoqO192679mXaKZNxIur2gPTq01AROfCEGoeHlU0MJbBm6EuaATuM89LjRwOVrw==",
+  "dgSpecHash": "Sr1b0bE7BWGnyUmM9qwU0omix8FpCj2YY7V8Dj2VrgA3L+OdE8qHo9AijYUPTTXBMLx5DNghjzIWc2ZBKTRVoA==",
   "success": true,
-  "projectFilePath": "D:\\Projetos\\GuideMe2\\GuideMeServerMVC\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
+  "projectFilePath": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Usuario\\.nuget\\packages\\microsoft.aspnetcore.authentication.jwtbearer\\6.0.11\\microsoft.aspnetcore.authentication.jwtbearer.6.0.11.nupkg.sha512",
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\microsoft.csharp\\4.5.0\\microsoft.csharp.4.5.0.nupkg.sha512",

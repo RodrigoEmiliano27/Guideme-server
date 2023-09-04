@@ -21,6 +21,12 @@ namespace GuideMeServerMVC.Controllers
             _configuration = configuration;
         }
 
+        public IActionResult Index()
+        {
+            return View("Index", new LoginRequest());
+        }
+
+        //https://localhost:7048/api/Login/login
         [HttpPost("login")]
         public ActionResult<object> Authenticate([FromBody] LoginRequest login)
         {

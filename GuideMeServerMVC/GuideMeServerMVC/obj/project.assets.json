@@ -736,11 +736,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Projetos\\GuideMe2\\GuideMeServerMVC\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
+      "projectUniqueName": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
       "projectName": "GuideMeServerMVC",
-      "projectPath": "D:\\Projetos\\GuideMe2\\GuideMeServerMVC\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
+      "projectPath": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
       "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-      "outputPath": "D:\\Projetos\\GuideMe2\\GuideMeServerMVC\\GuideMeServerMVC\\obj\\",
+      "outputPath": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
