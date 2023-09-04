@@ -66,6 +66,36 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
+        [HttpPost("fazLogin")]
+        public async Task<ActionResult<dynamic>> FazLogin([FromForm] LoginRequest model)
+        {
+            try
+            {
+                bool isUsernamePasswordValid = false;
+                string token = "";
+                if (model.UserName != null)
+                {
+                    // make await call to the Database to check username and password.
+                    // here we only checking if password value is admin
+                    isUsernamePasswordValid = model.Password == "admin" ? true : false;
+                    token = CreateToken(model.UserName);
+                }
+
+                /*HttpContext.Session.SetString("Logado", db_user.id.ToString());
+                HttpContext.Session.SetString("idPlant", db_user.id_plantacao.ToString());
+                HttpContext.Session.SetString("Name", db_user.Nome);
+                HttpContext.Session.SetString("Tipo", db_user.Tipo.ToString());
+                HttpContext.Session.SetString("Token", token);
+                return RedirectToAction("index", "Home");*/
+                System.Diagnostics.Debug.WriteLine(token);
+                return RedirectToAction("index", "Home");
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+
+        }
         private string CreateToken(string username)
         {
 

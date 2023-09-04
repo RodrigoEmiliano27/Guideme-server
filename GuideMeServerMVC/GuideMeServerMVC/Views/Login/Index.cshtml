@@ -10,12 +10,12 @@
     <form asp-action="FazLogin" method="post" enctype="multipart/form-data">
 
         <label for="login" class="control-label">Login</label>
-        <input type="text" Name="login" value="@Model.UserName" class="form-control" />
+        <input type="text" Name="UserName" value="@Model.UserName" class="form-control" />
             <span asp-validation-for="UserName" class="text-danger"></span>
         <br />
 
         <label for="sennha" class="control-label">Senha</label>
-            <input type="password" Name="senha" value="@Model.Password" class="form-control" />
+            <input type="password" Name="Password" value="@Model.Password" class="form-control" />
             <span asp-validation-for="Password" class="text-danger"></span>
         <br />
 
