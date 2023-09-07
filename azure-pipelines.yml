@@ -40,7 +40,7 @@ steps:
     downloadType: 'single'
     artifactName: 'drop'
     itemPattern: '**/*.zip'
-    downloadPath: '$(System.ArtifactsDirectory)'
+    downloadPath: '$(System.DefaultWorkingDirectory)'
 
 # ASP.NET Core (.NET Framework)
 - task: AzureWebApp@1
