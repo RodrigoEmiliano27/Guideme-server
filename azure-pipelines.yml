@@ -33,6 +33,8 @@ steps:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
 
+- task: PublishBuildArtifacts@1
+
 # ASP.NET Core (.NET Framework)
 - task: AzureWebApp@1
   inputs:
