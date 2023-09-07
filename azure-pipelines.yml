@@ -1,4 +1,4 @@
-# ASP.NET Core (.NET Framework)
+
 # Build and test ASP.NET Core projects targeting the full .NET Framework.
 # Add steps that publish symbols, save build artifacts, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
@@ -32,3 +32,11 @@ steps:
   inputs:
     platform: '$(buildPlatform)'
     configuration: '$(buildConfiguration)'
+
+# ASP.NET Core (.NET Framework)
+- task: AzureWebApp@1
+  inputs:
+    azureSubscription: 'Azure subscription 1(a9aa5f68-26c5-4077-91aa-2b9ab77551ab)'
+    appType: 'webAppLinux'
+    appName: 'GuidemeServer'
+    package: '$(System.DefaultWorkingDirectory)/**/*.zip'
