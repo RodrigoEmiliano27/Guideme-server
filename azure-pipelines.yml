@@ -49,3 +49,4 @@ steps:
     appType: 'webAppLinux'
     appName: 'GuidemeServer'
     package: '$(System.DefaultWorkingDirectory)/**/*.zip'
+    deploymentMethod: auto
