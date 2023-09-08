@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using GuideMeServerMVC.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace GuideMeServerMVC
 {
@@ -25,6 +27,8 @@ namespace GuideMeServerMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+            var connString = builder.Configuration.GetConnectionString("DefaultConnection");
+            builder.Services.AddDbContext<GuidemeDbContext>(o=>o.UseSqlServer(connString));
 
             var app = builder.Build();
 
