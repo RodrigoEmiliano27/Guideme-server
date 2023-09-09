@@ -3,6 +3,8 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using GuideMeServerMVC.Data;
 using Microsoft.EntityFrameworkCore;
+using Azure.Security.KeyVault.Secrets;
+using Azure.Identity;
 
 namespace GuideMeServerMVC
 {
@@ -27,8 +29,11 @@ namespace GuideMeServerMVC
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
-            var connString = builder.Configuration.GetConnectionString("DefaultConnection");
-            builder.Services.AddDbContext<GuidemeDbContext>(o=>o.UseSqlServer(connString));
+            var keyVaulEndpoint = new Uri(builder.Configuration["VaultKey"]);
+            var secretClient =  new SecretClient(keyVaulEndpoint, new DefaultAzureCredential());
+
+            KeyVaultSecret kvs = secretClient.GetSecret("GuidemeWebAPPSecret");
+            builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer(kvs.Value));
 
             var app = builder.Build();
 

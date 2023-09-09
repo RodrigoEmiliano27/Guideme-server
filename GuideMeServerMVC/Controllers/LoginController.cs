@@ -7,6 +7,7 @@ using System.Net;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using GuideMeServerMVC.Models;
+using GuideMeServerMVC.Data;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -15,10 +16,12 @@ namespace GuideMeServerMVC.Controllers
     public class LoginController : Controller
     {
         private readonly IConfiguration _configuration;
+        private readonly GuidemeDbContext _context;
 
-        public LoginController(IConfiguration configuration)
+        public LoginController(IConfiguration configuration, GuidemeDbContext context)
         {
             _configuration = configuration;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -41,9 +44,10 @@ namespace GuideMeServerMVC.Controllers
 
             if (login != null)
             {
+                var teste = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
                 // make await call to the Database to check username and password.
                 // here we only checking if password value is admin
-                isUsernamePasswordValid = loginrequest.Password == "admin" ? true : false;
+                isUsernamePasswordValid = teste !=null? true : false;
             }
             // if credentials are valid
             if (isUsernamePasswordValid)
