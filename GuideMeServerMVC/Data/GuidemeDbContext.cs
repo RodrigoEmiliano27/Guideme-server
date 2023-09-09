@@ -6,16 +6,12 @@ namespace GuideMeServerMVC.Data
     public class GuidemeDbContext:DbContext
     {
         
-        public GuidemeDbContext(DbContextOptions<GuidemeDbContext> options)
+        public GuidemeDbContext(DbContextOptions options)
       : base(options)
         {
             
         }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            // You don't actually ever need to call this
-        }
-
+       
         public DbSet<UsuarioViewModel> Usuarios { get; set; } = null!;
         public DbSet<AppLoginViewModel> AppLogin { get; set; } = null!;
 
