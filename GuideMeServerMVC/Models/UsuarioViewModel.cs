@@ -1,5 +1,8 @@
-﻿namespace GuideMeServerMVC.Models
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace GuideMeServerMVC.Models
 {
+    [Table("tbUsuarios")]
     public class UsuarioViewModel
     {
         public int Id { get; set; }
