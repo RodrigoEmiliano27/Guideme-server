@@ -15,10 +15,6 @@ namespace GuideMeServerMVC.Data
         {
             // You don't actually ever need to call this
         }
-        public GuidemeDbContext()
-        {
-           
-        }
 
         public DbSet<UsuarioViewModel> Usuarios { get; set; } = null!;
         public DbSet<AppLoginViewModel> AppLogin { get; set; } = null!;
