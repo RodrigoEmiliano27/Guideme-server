@@ -15,3 +15,4 @@
 *.bak
 .GuideMeServerMVC/obj/
 .GuideMeServerMVC/bin/
+.vs

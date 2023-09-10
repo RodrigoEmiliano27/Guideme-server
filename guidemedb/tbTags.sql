@@ -3,7 +3,9 @@
 	[Id] INT IDENTITY(1,1) NOT NULL PRIMARY KEY,
 	[TAG] VARCHAR(50) UNIQUE NOT NULL,
 	[ID_ESTABELECIMENTO] INT NOT NULL,
+    [ID_TIPO_TAG] INT NOT NULL,
 
+    FOREIGN KEY ([ID_TIPO_TAG]) REFERENCES [tbTipoTag]([ID]),
 	FOREIGN KEY ([ID_ESTABELECIMENTO]) REFERENCES [tbEstabelecimento]([ID]),
 )
 GO
@@ -14,9 +16,6 @@ ON [tbTags]
 INSTEAD OF DELETE
 AS
 BEGIN
-    -- Delete records from [tbTagDetalhe] where ID_TAG matches the deleted tag ID
-    DELETE FROM [tbTagDetalhe]
-    WHERE [ID_TAG] IN (SELECT [ID] FROM DELETED);
 
     DELETE FROM [tbTagsPai]
     WHERE [ID_TAG] IN (SELECT [ID] FROM DELETED);
