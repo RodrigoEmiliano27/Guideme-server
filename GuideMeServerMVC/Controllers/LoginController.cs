@@ -8,6 +8,8 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using GuideMeServerMVC.Models;
 using GuideMeServerMVC.Data;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -31,6 +33,7 @@ namespace GuideMeServerMVC.Controllers
 
         //https://localhost:7048/api/Login/login
         [HttpPost("login")]
+        [AllowAnonymous]
         public ActionResult<object> Authenticate([FromBody] LoginRequest login)
         {
             var loginResponse = new LoginResponse { };
@@ -68,6 +71,21 @@ namespace GuideMeServerMVC.Controllers
                 // if username/password are not valid send unauthorized status code in response               
                 return BadRequest("Username or Password Invalid!");
             }
+        }
+        [HttpPost("testeBd")]
+        [AllowAnonymous]
+        public ActionResult<object> TestarBd()
+        {
+            try
+            {
+                var teste = _context.AppLogin.ToList();
+                return Ok(JsonConvert.SerializeObject(teste));
+            }
+            catch (Exception erro)
+            {
+                return Ok(erro.ToString());
+            }
+            
         }
 
         [HttpPost("fazLogin")]
