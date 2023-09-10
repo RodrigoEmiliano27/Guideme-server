@@ -12,5 +12,7 @@ namespace GuideMeServerMVC.Models
         public string TagId { get; set; }
         [Column("ID_ESTABELECIMENTO")]
         public int EstabelecimentoId { get; set; }
+        [Column("[ID_TIPO_TAG]")]
+        public int tipoTag { get; set; }
     }
 }

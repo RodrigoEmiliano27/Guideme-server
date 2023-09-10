@@ -60,8 +60,6 @@
   <ItemGroup>
     <Build Include="tbAppLogin.sql" />
     <Build Include="tbTags.sql" />
-    <Build Include="tbTipoTag.sql" />
-    <Build Include="tbTagDetalhe.sql" />
     <Build Include="tbEstabelecimento.sql" />
     <Build Include="tbLugares.sql" />
     <Build Include="tbTagsPai.sql" />
