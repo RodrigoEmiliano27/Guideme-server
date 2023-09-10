@@ -13,6 +13,8 @@
 .idea/
 *.tmp
 *.bak
-.GuideMeServerMVC/obj/
-.GuideMeServerMVC/bin/
-.vs
+/GuideMeServerMVC/obj/
+/GuideMeServerMVC/bin/
+/guidemedb/obj/
+/guidemedb/bin/
+.vs/
