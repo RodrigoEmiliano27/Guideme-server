@@ -1,0 +1,6 @@
+﻿CREATE TABLE [tbTipoTag]
+(
+	[Id] INT  Identity(1,1) NOT NULL PRIMARY KEY,
+	[DESCRICAO] VARCHAR(50) NOT NULL,
+
+)

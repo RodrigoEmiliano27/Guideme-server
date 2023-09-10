@@ -8,3 +8,8 @@
 /GuideMeServerMVC/bin/
 /GuideMeServerMVC/obj/
 *.suo
+*.dll
+.vs/
+.idea/
+*.tmp
+*.bak
