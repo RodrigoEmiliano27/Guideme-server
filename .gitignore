@@ -13,3 +13,5 @@
 .idea/
 *.tmp
 *.bak
+.GuideMeServerMVC/obj/
+.GuideMeServerMVC/bin/

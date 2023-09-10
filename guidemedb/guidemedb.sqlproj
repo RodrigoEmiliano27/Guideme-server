@@ -64,5 +64,6 @@
     <Build Include="tbTagDetalhe.sql" />
     <Build Include="tbEstabelecimento.sql" />
     <Build Include="tbLugares.sql" />
+    <Build Include="tbTagsPai.sql" />
   </ItemGroup>
 </Project>

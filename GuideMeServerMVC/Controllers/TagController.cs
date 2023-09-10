@@ -16,9 +16,9 @@ namespace GuideMeServerMVC.Controllers
         //[HttpGet(Name = "GetWeatherForecast"), Authorize]
         //https://localhost:7048/api/Tag/tag?id=1
         [HttpGet("tag"), Authorize]
-        public Tag GetTag(string id)
+        public TagViewModel GetTag(string id)
         {
-            return new Tag
+            return new TagViewModel
             {
                 Id = id,
                 Informacao = "Lojas Americanas"
@@ -26,7 +26,7 @@ namespace GuideMeServerMVC.Controllers
         }
 
         [HttpPost("tag"), Authorize]
-        public Tag PostTag(Tag model)
+        public TagViewModel PostTag(TagViewModel model)
         {
             //DAO.Insert(model)
             //Tag tag = new Tag();
