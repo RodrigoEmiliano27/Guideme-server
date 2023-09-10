@@ -1,11 +1,11 @@
-﻿namespace GuideMeServerMVC.Models
+﻿namespace GuideMeServerMVC.TO
 {
-    public class LoginResponse
+    public class LoginResponseTO
     {
-        public LoginResponse()
+        public LoginResponseTO()
         {
-            this.Token = String.Empty;
-            this.responseMsg =
+            Token = string.Empty;
+            responseMsg =
             new HttpResponseMessage()
             {
                 StatusCode =

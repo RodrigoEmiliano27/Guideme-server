@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using GuideMeServerMVC.Models;
 using Microsoft.AspNetCore.Authorization;
+using GuideMeServerMVC.Data;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -8,6 +9,9 @@ namespace GuideMeServerMVC.Controllers
     [ApiController]
     public class TagController : Controller
     {
+        public TagController(GuidemeDbContext context)
+        { 
+        }
         public IActionResult Index()
         {
             return View();
@@ -15,15 +19,11 @@ namespace GuideMeServerMVC.Controllers
 
         //[HttpGet(Name = "GetWeatherForecast"), Authorize]
         //https://localhost:7048/api/Tag/tag?id=1
-        [HttpGet("tag"), Authorize]
+        /*[HttpGet("tag"), Authorize]
         public TagViewModel GetTag(string id)
         {
-            return new TagViewModel
-            {
-                Id = id,
-                Informacao = "Lojas Americanas"
-            };
-        }
+            return Ok("TESTE");
+        }*/
 
         [HttpPost("tag"), Authorize]
         public TagViewModel PostTag(TagViewModel model)

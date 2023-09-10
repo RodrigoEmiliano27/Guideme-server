@@ -10,6 +10,7 @@ using GuideMeServerMVC.Models;
 using GuideMeServerMVC.Data;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using GuideMeServerMVC.TO;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -28,16 +29,16 @@ namespace GuideMeServerMVC.Controllers
 
         public IActionResult Index()
         {
-            return View("Index", new LoginRequest());
+            return View("Index", new LoginRequestTO());
         }
 
         //https://localhost:7048/api/Login/login
         [HttpPost("login")]
         [AllowAnonymous]
-        public ActionResult<object> Authenticate([FromBody] LoginRequest login)
+        public ActionResult<object> Authenticate([FromBody] LoginRequestTO login)
         {
-            var loginResponse = new LoginResponse { };
-            LoginRequest loginrequest = new()
+            var loginResponse = new LoginResponseTO { };
+            LoginRequestTO loginrequest = new()
             {
                 UserName = login.UserName.ToLower(),
                 Password = login.Password
