@@ -1,0 +1,7 @@
+﻿CREATE TABLE [dbo].[tbUsuariosEstabelecimento]
+(
+	[Id] INT NOT NULL PRIMARY KEY, 
+    [LOGIN] VARCHAR(MAX) NOT NULL, 
+    [SENHA] VARCHAR(MAX) NOT NULL, 
+    [ADMINISTRADOR] BIT NOT NULL
+)
