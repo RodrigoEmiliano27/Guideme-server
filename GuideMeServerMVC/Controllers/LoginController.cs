@@ -45,18 +45,22 @@ namespace GuideMeServerMVC.Controllers
             };
 
             bool isUsernamePasswordValid = false;
+            bool isUsuarioApp = false;
+            int id = 0;
 
             if (login != null)
             {
-                var teste = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
+                var usuarioApp = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
                 // make await call to the Database to check username and password.
                 // here we only checking if password value is admin
-                isUsernamePasswordValid = teste !=null? true : false;
+                id = usuarioApp.Id;
+                isUsuarioApp= usuarioApp != null ? true : false;
+                isUsernamePasswordValid = usuarioApp != null? true : false;
             }
             // if credentials are valid
             if (isUsernamePasswordValid)
             {
-                string token = CreateToken(loginrequest.UserName);
+                string token = CreateToken(loginrequest.UserName,id, isUsuarioApp);
 
                 loginResponse.Token = token;
                 loginResponse.responseMsg = new HttpResponseMessage()
@@ -74,14 +78,17 @@ namespace GuideMeServerMVC.Controllers
             }
         }
         
-        private string CreateToken(string username)
+        private string CreateToken(string username,int id,bool app=false)
         {
 
             List<Claim> claims = new()
             {                    
                 //list of Claims - we only checking username - more claims can be added.
                 new Claim("username", Convert.ToString(username)),
+                new Claim("id", id.ToString())
             };
+            if (app)
+                claims.Add(new Claim(ClaimTypes.Role, "app"));
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
