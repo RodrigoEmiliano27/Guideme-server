@@ -1,25 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj": {}
+    "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj": {}
   },
   "projects": {
-    "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj": {
+    "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
+        "projectUniqueName": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
         "projectName": "GuideMeServerMVC",
-        "projectPath": "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
-        "packagesPath": "C:\\Users\\081190015\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\081190015\\source\\repos\\Guideme-server\\GuideMeServerMVC\\obj\\",
+        "projectPath": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\GuideMeServerMVC.csproj",
+        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
+        "outputPath": "D:\\Projetos\\Guideme-server\\GuideMeServerMVC\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
           "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\081190015\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -97,7 +95,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.101\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.400\\RuntimeIdentifierGraph.json"
         }
       }
     }

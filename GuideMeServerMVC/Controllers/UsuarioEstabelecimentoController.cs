@@ -9,6 +9,7 @@ using GuideMeServerMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
+using System.Diagnostics;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -22,15 +23,38 @@ namespace GuideMeServerMVC.Controllers
         {
             _context = context;
         }
+
+        [HttpGet("Login")]
         public IActionResult Login()
         {
             System.Diagnostics.Debug.WriteLine("Chamou a tela de Login!");
             return View("Login", new UsuarioEstabelecimentoModel());
            // return View("Login", new LoginRequestTO());
         }
+        [HttpGet("Index")]
+        public IActionResult Index()
+        {
+            Debug.WriteLine("Chamou a tela de Index!");
+            return View("Menu");
+        }
+
+        [HttpGet("Error")]
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        public IActionResult Error()
+        {
+            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        [HttpGet("Cadastro")]
+        public IActionResult Cadastro()
+        {
+            Debug.WriteLine("Chamou a tela de Cadastro!");
+            return View("Cadastro", new UsuarioEstabelecimentoModel());
+            // return View("Login", new LoginRequestTO());
+        }
 
         [HttpPost("create")]
-        public ActionResult<object> PostUsuario(UsuarioEstabelecimentoModel usuario)
+        public ActionResult<object> CreateUsuario(UsuarioEstabelecimentoModel usuario)
         {
             
             _context.UsuariosEstabelecimento.Add(usuario);
@@ -39,7 +63,7 @@ namespace GuideMeServerMVC.Controllers
         }
 
         [HttpPost("FazLogin")]
-        public ActionResult<object> FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
+        public IActionResult FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
         {
             System.Diagnostics.Debug.WriteLine("Testei");
             //Valida usuario
@@ -53,12 +77,14 @@ namespace GuideMeServerMVC.Controllers
             if(isUsernamePasswordValid)
             {
                 System.Diagnostics.Debug.WriteLine("Logou krai");
-                return Ok("Login realizado");
+                return RedirectToAction("Index");
+                //return Ok("Login realizado");
             }
             else
             {
                 System.Diagnostics.Debug.WriteLine("N achou");
-                return NotFound();
+                return RedirectToAction("Error");
+                //return NotFound();
             }
         }
     }

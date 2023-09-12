@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
 using System.Security.Claims;
-using GuideMeServerMVC.Utils;
+//using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -76,10 +76,11 @@ namespace GuideMeServerMVC.Controllers
                 if (tagInfo != null)
                     return BadRequest("Tag já existente");
 
-                int idUsuario = ClaimsHelper.GetIntClaim(HttpContext.User.Identity as ClaimsIdentity, "id");
+               // int idUsuario = ClaimsHelper.GetIntClaim(HttpContext.User.Identity as ClaimsIdentity, "id");
 
-                if(idUsuario==-1)
-                    return NotFound("Usuário não encontrado");
+
+                //if(idUsuario==-1)
+                   // return NotFound("Usuário não encontrado");
 
 
                 List<TagViewModel> listaTags =
