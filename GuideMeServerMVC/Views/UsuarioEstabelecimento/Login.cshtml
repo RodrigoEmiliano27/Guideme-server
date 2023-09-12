@@ -1,4 +1,4 @@
-﻿@using GuideMeServerMVC.TO
+﻿@using GuideMeServerMVC.Models
 @model UsuarioEstabelecimentoModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,7 +14,7 @@
             <span asp-validation-for="Login" class="text-danger"></span>
             <br />
 
-            <label for="sennha" class="control-label">Senha</label>
+            <label for="senha" class="control-label">Senha</label>
             <input type="password" Name="Senha" value="@Model.Senha" class="form-control" />
             <span asp-validation-for="Senha" class="text-danger"></span>
             <br />

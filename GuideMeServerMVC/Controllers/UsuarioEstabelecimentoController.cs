@@ -24,7 +24,8 @@ namespace GuideMeServerMVC.Controllers
         }
         public IActionResult Login()
         {
-            return View("Login");
+            System.Diagnostics.Debug.WriteLine("Chamou a tela de Login!");
+            return View("Login", new UsuarioEstabelecimentoModel());
            // return View("Login", new LoginRequestTO());
         }
 
@@ -37,22 +38,26 @@ namespace GuideMeServerMVC.Controllers
             return Ok("Teste Post");
         }
 
-        [HttpPost("login")]
-        public ActionResult<object> FazLogin(UsuarioEstabelecimentoModel usuario)
+        [HttpPost("FazLogin")]
+        public ActionResult<object> FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
         {
+            System.Diagnostics.Debug.WriteLine("Testei");
             //Valida usuario
             bool isUsernamePasswordValid = false;
             if (usuario != null)
             {
+                System.Diagnostics.Debug.WriteLine("Entrou no login");
                 var teste = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
                 isUsernamePasswordValid = teste != null ? true : false;
             }
             if(isUsernamePasswordValid)
             {
+                System.Diagnostics.Debug.WriteLine("Logou krai");
                 return Ok("Login realizado");
             }
             else
             {
+                System.Diagnostics.Debug.WriteLine("N achou");
                 return NotFound();
             }
         }
