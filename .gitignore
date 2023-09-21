@@ -19,3 +19,7 @@
 /guidemedb/bin/
 .vs/
 /.vs
+/guidemedb/guidemedb.dbmdl
+/guidemedb/guidemedb.jfm
+/GuideMeCadastro/GuideMeCadastro/bin
+/GuideMeCadastro/GuideMeCadastro/obj
