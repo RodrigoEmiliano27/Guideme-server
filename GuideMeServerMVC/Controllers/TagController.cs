@@ -3,6 +3,8 @@ using GuideMeServerMVC.Models;
 using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
+using System.Security.Claims;
+//using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -27,7 +29,8 @@ namespace GuideMeServerMVC.Controllers
         {
             return Ok("TESTE");
         }*/
-        [HttpGet("GetTagData"), Authorize]
+        [Authorize(Roles = "app")]
+        [HttpGet("GetTagData")]
         public ActionResult<object> GetData(string TagID)
         {
             try
@@ -54,6 +57,49 @@ namespace GuideMeServerMVC.Controllers
                 data.Tags = listaTags;
                 data.Lugares = lista;
                     
+
+                return Ok(data);
+            }
+            catch (Exception err)
+            {
+                return Ok("");
+            }
+        }
+        [Authorize]
+        [HttpPost("SalvarTag")]
+        public ActionResult<object> SalvaTag(string TagID)
+        {
+            try
+            {
+                var tagInfo = _context.Tags.FirstOrDefault(x => x.TagId.Equals(TagID));
+
+                if (tagInfo != null)
+                    return BadRequest("Tag já existente");
+
+               // int idUsuario = ClaimsHelper.GetIntClaim(HttpContext.User.Identity as ClaimsIdentity, "id");
+
+
+                //if(idUsuario==-1)
+                   // return NotFound("Usuário não encontrado");
+
+
+                List<TagViewModel> listaTags =
+                    _context.Tags.Where(x => x.EstabelecimentoId == tagInfo.EstabelecimentoId).ToList();
+
+                List<LugaresViewModel> lista = new List<LugaresViewModel>();
+
+                foreach (TagViewModel tag in listaTags)
+                {
+                    tag.TagsPai = _context.TagsPai.Where(x => x.Id_Tag == tag.Id).ToList();
+                    var lugar = _context.Lugares.FirstOrDefault(x => x.TAG_id == tag.Id);
+                    if (lugar != null)
+                        lista.Add(lugar);
+                }
+
+                TagsDataTO data = new TagsDataTO();
+                data.Tags = listaTags;
+                data.Lugares = lista;
+
 
                 return Ok(data);
             }

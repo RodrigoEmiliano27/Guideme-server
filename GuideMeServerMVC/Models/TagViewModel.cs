@@ -14,6 +14,8 @@ namespace GuideMeServerMVC.Models
         public int EstabelecimentoId { get; set; }
         [Column("ID_TIPO_TAG")]
         public int tipoTag { get; set; }
+        [Column("NOME")]
+        public string Nome { get; set; }
 
         [NotMapped]
         public List<TagsPaiViewModel> TagsPai { get; set; }

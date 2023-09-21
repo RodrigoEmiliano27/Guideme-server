@@ -18,6 +18,7 @@ namespace GuideMeServerMVC.Data
         public DbSet<LugaresViewModel> Lugares { get; set; } = null!;
         public DbSet<TagViewModel> Tags { get; set; } = null!;
         public DbSet<TagsPaiViewModel> TagsPai { get; set; } = null!;
+        public DbSet<UsuarioEstabelecimentoModel> UsuariosEstabelecimento { get; set; } = null!;
 
 
     }
