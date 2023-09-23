@@ -33,7 +33,7 @@ namespace GuideMeServerMVC.Controllers
         }
 
         //https://localhost:7048/api/Login/login
-        [HttpPost("login")]
+        [HttpPost("v1/login")]
         [AllowAnonymous]
         public ActionResult<object> Authenticate([FromBody] LoginRequestTO login)
         {
