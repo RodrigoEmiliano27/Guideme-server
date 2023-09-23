@@ -8,41 +8,41 @@ build_property.PlatformNeutralAssembly =
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = GuideMeServerMVC
 build_property.RootNamespace = GuideMeServerMVC
-build_property.ProjectDir = C:\Users\rodri\Documents\TCC\Guideme-Server\GuideMeServerMVC\
+build_property.ProjectDir = C:\Users\rodri\Documents\TCC\Guideme-Server\Guideme-server\GuideMeServerMVC\
 build_property.RazorLangVersion = 6.0
 build_property.SupportLocalizedComponentNames = 
 build_property.GenerateRazorMetadataSourceChecksumAttributes = 
-build_property.MSBuildProjectDirectory = C:\Users\rodri\Documents\TCC\Guideme-Server\GuideMeServerMVC
+build_property.MSBuildProjectDirectory = C:\Users\rodri\Documents\TCC\Guideme-Server\Guideme-server\GuideMeServerMVC
 build_property._RazorSourceGeneratorDebug = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/Home/Index.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/Home/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxJbmRleC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/Home/Privacy.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/Home/Privacy.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcSG9tZVxQcml2YWN5LmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/Login/Index.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/Login/Index.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcTG9naW5cSW5kZXguY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/Shared/Error.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/Shared/Error.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXEVycm9yLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/Shared/_ValidationScriptsPartial.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/Shared/_ValidationScriptsPartial.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/_ViewImports.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/_ViewImports.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdJbXBvcnRzLmNzaHRtbA==
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/_ViewStart.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/_ViewStart.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcX1ZpZXdTdGFydC5jc2h0bWw=
 build_metadata.AdditionalFiles.CssScope = 
 
-[C:/Users/rodri/Documents/TCC/Guideme-Server/GuideMeServerMVC/Views/Shared/_Layout.cshtml]
+[C:/Users/rodri/Documents/TCC/Guideme-Server/Guideme-server/GuideMeServerMVC/Views/Shared/_Layout.cshtml]
 build_metadata.AdditionalFiles.TargetPath = Vmlld3NcU2hhcmVkXF9MYXlvdXQuY3NodG1s
 build_metadata.AdditionalFiles.CssScope = b-fiqhncpq0e
