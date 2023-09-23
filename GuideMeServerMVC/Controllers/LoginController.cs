@@ -10,6 +10,7 @@ using GuideMeServerMVC.Models;
 using GuideMeServerMVC.Data;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
+using GuideMeServerMVC.TO;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -28,34 +29,38 @@ namespace GuideMeServerMVC.Controllers
 
         public IActionResult Index()
         {
-            return View("Index", new LoginRequest());
+            return View("Index", new LoginRequestTO());
         }
 
         //https://localhost:7048/api/Login/login
-        [HttpPost("login")]
+        [HttpPost("v1/login")]
         [AllowAnonymous]
-        public ActionResult<object> Authenticate([FromBody] LoginRequest login)
+        public ActionResult<object> Authenticate([FromBody] LoginRequestTO login)
         {
-            var loginResponse = new LoginResponse { };
-            LoginRequest loginrequest = new()
+            var loginResponse = new LoginResponseTO { };
+            LoginRequestTO loginrequest = new()
             {
                 UserName = login.UserName.ToLower(),
                 Password = login.Password
             };
 
             bool isUsernamePasswordValid = false;
+            bool isUsuarioApp = false;
+            int id = 0;
 
             if (login != null)
             {
-                var teste = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
+                var usuarioApp = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
                 // make await call to the Database to check username and password.
                 // here we only checking if password value is admin
-                isUsernamePasswordValid = teste !=null? true : false;
+                id = usuarioApp.Id;
+                isUsuarioApp= usuarioApp != null ? true : false;
+                isUsernamePasswordValid = usuarioApp != null? true : false;
             }
             // if credentials are valid
             if (isUsernamePasswordValid)
             {
-                string token = CreateToken(loginrequest.UserName);
+                string token = CreateToken(loginrequest.UserName,id, isUsuarioApp);
 
                 loginResponse.Token = token;
                 loginResponse.responseMsg = new HttpResponseMessage()
@@ -72,60 +77,18 @@ namespace GuideMeServerMVC.Controllers
                 return BadRequest("Username or Password Invalid!");
             }
         }
-        [HttpPost("testeBd")]
-        [AllowAnonymous]
-        public ActionResult<object> TestarBd()
-        {
-            try
-            {
-                var teste = _context.AppLogin.ToList();
-                return Ok(JsonConvert.SerializeObject(teste));
-            }
-            catch (Exception erro)
-            {
-                return Ok(erro.ToString());
-            }
-            
-        }
-
-        [HttpPost("fazLogin")]
-        public async Task<ActionResult<dynamic>> FazLogin([FromForm] LoginRequest model)
-        {
-            try
-            {
-                bool isUsernamePasswordValid = false;
-                string token = "";
-                if (model.UserName != null)
-                {
-                    // make await call to the Database to check username and password.
-                    // here we only checking if password value is admin
-                    isUsernamePasswordValid = model.Password == "admin" ? true : false;
-                    token = CreateToken(model.UserName);
-                }
-
-                /*HttpContext.Session.SetString("Logado", db_user.id.ToString());
-                HttpContext.Session.SetString("idPlant", db_user.id_plantacao.ToString());
-                HttpContext.Session.SetString("Name", db_user.Nome);
-                HttpContext.Session.SetString("Tipo", db_user.Tipo.ToString());
-                HttpContext.Session.SetString("Token", token);
-                return RedirectToAction("index", "Home");*/
-                System.Diagnostics.Debug.WriteLine(token);
-                return RedirectToAction("index", "Home");
-            }
-            catch (Exception erro)
-            {
-                return View("Error", new ErrorViewModel(erro.ToString()));
-            }
-
-        }
-        private string CreateToken(string username)
+        
+        private string CreateToken(string username,int id,bool app=false)
         {
 
             List<Claim> claims = new()
             {                    
                 //list of Claims - we only checking username - more claims can be added.
                 new Claim("username", Convert.ToString(username)),
+                new Claim("id", id.ToString())
             };
+            if (app)
+                claims.Add(new Claim(ClaimTypes.Role, "app"));
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

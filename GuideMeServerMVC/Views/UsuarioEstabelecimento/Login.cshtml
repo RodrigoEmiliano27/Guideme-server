@@ -1,0 +1,29 @@
+﻿@using GuideMeServerMVC.Models
+@model UsuarioEstabelecimentoModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+    <div>
+        <h2>Login</h2>
+        <form asp-action="FazLogin" method="post" enctype="multipart/form-data">
+            Pagina de teste
+            <label for="login" class="control-label">Login</label>
+            <input type="text" Name="Login" value="@Model.Login" class="form-control" />
+            <span asp-validation-for="Login" class="text-danger"></span>
+            <br />
+
+            <label for="senha" class="control-label">Senha</label>
+            <input type="password" Name="Senha" value="@Model.Senha" class="form-control" />
+            <span asp-validation-for="Senha" class="text-danger"></span>
+            <br />
+
+            <input type="submit" value="Logar" class="btn-info" />
+            &nbsp;&nbsp;&nbsp;
+            <a href="/Home/index" class="btn-light">Voltar</a>
+            <br />
+        </form>
+    </div>
+</body>
+
