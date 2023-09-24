@@ -63,10 +63,7 @@ namespace GuideMeServerMVC.Controllers
                 string token = CreateToken(loginrequest.UserName,id, isUsuarioApp);
 
                 loginResponse.Token = token;
-                loginResponse.responseMsg = new HttpResponseMessage()
-                {
-                    StatusCode = HttpStatusCode.OK
-                };
+                
 
                 //return the token
                 return Ok(new { loginResponse });
