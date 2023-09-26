@@ -53,6 +53,14 @@ namespace GuideMeServerMVC.Controllers
             // return View("Login", new LoginRequestTO());
         }
 
+        [HttpGet("CadastrarEstabelecimento")]
+        public IActionResult CadastrarEstabelecimento()
+        {
+            Debug.WriteLine("Chamou a tela de Cadastro de estabelecimento!");
+            return View("CadastroEstabelecimento", new EstabelecimentoViewModel());
+            // return View("Login", new LoginRequestTO());
+        }
+
         [HttpPost("create")]
         public ActionResult<object> CreateUsuario(UsuarioEstabelecimentoModel usuario)
         {
