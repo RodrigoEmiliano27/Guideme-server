@@ -1,17 +1,9 @@
 ﻿<body>
     <div>
-        <h2>Index</h2>
-        <a href="CadastrarEstabelecimento" class="btn-light">Cadastrar novo Estabelecimento</a>
+        <h2>Menu</h2>
+        <a asp-controller="Estabelecimento" asp-action="CadastrarEstabelecimento" class="btn-light">Cadastrar Estabelecimento</a>
+
         <p>Estabelecimento XXXX</p>
         <button onclick="redirectToCadastro()">Cadastrar Novo Usuário</button>
-        <a href="Cadastro" class="btn-light">Cadastrar</a>
     </div>
 </body>
-
-<script>
-    function redirectToCadastro() {
-        // Redireciona para a página de cadastro de novo usuário
-        window.location.href = 'api/UsuarioEstabelecimento/Cadastro'; // Substitua pelo caminho correto da sua rota de cadastro
-    }
-</script>
-

@@ -33,6 +33,10 @@ namespace GuideMeServerMVC.Controllers
         /*[HttpPost("create")]
         public ActionResult<object> CreateUsuario(UsuarioEstabelecimentoModel usuario)
         {
+            //Cadastrar o estabelecimento
+
+            //Pegar o id do estabelecimento inserido e relaciona-lo ao usuario
+
 
             _context.UsuariosEstabelecimento.Add(usuario);
             _context.SaveChanges();
