@@ -23,7 +23,8 @@ namespace GuideMeServerMVC.Models
         public string Senha { get; set; }
         [Column("ADMINISTRADOR")]
         public bool Admin { get; set; }
-        public int? Id_Estabelecimento { get; set; }
+        [Column("Id_Estabelecimento")]
+        public int Id_Estabelecimento { get; set; }
 
 
     }

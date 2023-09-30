@@ -37,45 +37,61 @@ namespace GuideMeServerMVC.Controllers
         [AllowAnonymous]
         public ActionResult<object> Authenticate([FromBody] LoginRequestTO login)
         {
-            var loginResponse = new LoginResponseTO { };
-            LoginRequestTO loginrequest = new()
+            try
             {
-                UserName = login.UserName.ToLower(),
-                Password = login.Password
-            };
+                var loginResponse = new LoginResponseTO { };
+                LoginRequestTO loginrequest = new()
+                {
+                    UserName = login.UserName.ToLower(),
+                    Password = login.Password
+                };
 
-            bool isUsernamePasswordValid = false;
-            bool isUsuarioApp = false;
-            int id = 0;
+                bool isUsernamePasswordValid = false;
+                bool isUsuarioApp = false;
+                bool isUsuarioEstabelecimento = false;
+                int id = 0;
+                UsuarioEstabelecimentoModel usuarioEstabelecimento = null;
+                if (login != null)
+                {
 
-            if (login != null)
-            {
-                var usuarioApp = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
-                // make await call to the Database to check username and password.
-                // here we only checking if password value is admin
-                id = usuarioApp.Id;
-                isUsuarioApp= usuarioApp != null ? true : false;
-                isUsernamePasswordValid = usuarioApp != null? true : false;
+                    var usuarioApp = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
+                    if (usuarioApp == null)
+                        usuarioEstabelecimento = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
+                    // make await call to the Database to check username and password.
+                    // here we only checking if password value is admin
+                    if (usuarioApp != null)
+                        id = usuarioApp.Id;
+                    else if (usuarioEstabelecimento != null)
+                        id = usuarioEstabelecimento.Id;
+
+
+                    isUsuarioApp = usuarioApp != null ? true : false;
+                    isUsernamePasswordValid = (usuarioApp != null || usuarioEstabelecimento != null) ? true : false;
+                }
+                // if credentials are valid
+                if (isUsernamePasswordValid)
+                {
+                    string token = CreateToken(loginrequest.UserName, id, isUsuarioApp, usuarioEstabelecimento);
+
+                    loginResponse.Token = token;
+
+
+                    //return the token
+                    return Ok(new { loginResponse });
+                }
+                else
+                {
+                    // if username/password are not valid send unauthorized status code in response               
+                    return BadRequest("Username or Password Invalid!");
+                }
             }
-            // if credentials are valid
-            if (isUsernamePasswordValid)
+            catch (Exception err)
             {
-                string token = CreateToken(loginrequest.UserName,id, isUsuarioApp);
-
-                loginResponse.Token = token;
-                
-
-                //return the token
-                return Ok(new { loginResponse });
-            }
-            else
-            {
-                // if username/password are not valid send unauthorized status code in response               
-                return BadRequest("Username or Password Invalid!");
+                return BadRequest(err.ToString());
             }
         }
-        
-        private string CreateToken(string username,int id,bool app=false)
+
+        private string CreateToken(string username, int id, bool app = false, UsuarioEstabelecimentoModel usuarioEstabelecimento = null)
         {
 
             List<Claim> claims = new()
@@ -86,6 +102,12 @@ namespace GuideMeServerMVC.Controllers
             };
             if (app)
                 claims.Add(new Claim(ClaimTypes.Role, "app"));
+            else if (usuarioEstabelecimento != null)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "estabelecimento"));
+                claims.Add(new Claim("IdEstabelecimento", Convert.ToString(usuarioEstabelecimento.Id_Estabelecimento)));
+            }
+
 
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);

@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
 using System.Diagnostics;
-using static System.Net.Mime.MediaTypeNames;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -25,13 +24,7 @@ namespace GuideMeServerMVC.Controllers
             _context = context;
         }
 
-        [HttpGet("Login")]
-        public IActionResult Login()
-        {
-            System.Diagnostics.Debug.WriteLine("Chamou a tela de Login!");
-            return View("Login", new UsuarioEstabelecimentoModel());
-           // return View("Login", new LoginRequestTO());
-        }
+
         [HttpGet("Index")]
         public IActionResult Index()
         {
@@ -54,21 +47,10 @@ namespace GuideMeServerMVC.Controllers
             // return View("Login", new LoginRequestTO());
         }
 
-        //[HttpGet("CadastrarEstabelecimento")]
-        public IActionResult CadastrarEstabelecimento()
-        {
-            EstabelecimentoController estabelecimentoController = new EstabelecimentoController(_context);
-            Debug.WriteLine("Chamou a tela de Cadastro de estabelecimento!");
-            return estabelecimentoController.CadastrarEstabelecimento();
-
-
-            //return View("CadastroEstabelecimento", new EstabelecimentoViewModel());
-           // return View("Cadastro", new EstabelecimentoViewModel());
-        }
-
         [HttpPost("create")]
         public ActionResult<object> CreateUsuario(UsuarioEstabelecimentoModel usuario)
         {
+
             _context.UsuariosEstabelecimento.Add(usuario);
             _context.SaveChanges();
             return Ok("Teste Post");
@@ -77,36 +59,27 @@ namespace GuideMeServerMVC.Controllers
         [HttpPost("FazLogin")]
         public IActionResult FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
         {
+            System.Diagnostics.Debug.WriteLine("Testei");
             //Valida usuario
             bool isUsernamePasswordValid = false;
             if (usuario != null)
             {
-                Debug.WriteLine("Entrou no login");
-                //var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
-                var users = _context.UsuariosEstabelecimento.ToList();
-                Debug.WriteLine("users => " + users);
-                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login);
-
-                isUsernamePasswordValid = user != null ? true : false;
-
-                if (isUsernamePasswordValid)
-                {
-                    Debug.WriteLine("Logou krai");
-                    HttpContext.Session.SetInt32("UserId", user.Id);
-                    // Recupere o ID do usuário da sessão
-                    var userId = HttpContext.Session.GetInt32("UserId");
-                    Debug.WriteLine("userId => " + userId);
-                    return RedirectToAction("Index");
-                    //return Ok("Login realizado");
-                }
-                else
-                {
-                    Debug.WriteLine("N achou");
-                    return RedirectToAction("Error");
-                    //return NotFound();
-                }
+                System.Diagnostics.Debug.WriteLine("Entrou no login");
+                var teste = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
+                isUsernamePasswordValid = teste != null ? true : false;
             }
-            else return RedirectToAction("Error");
+            if (isUsernamePasswordValid)
+            {
+                System.Diagnostics.Debug.WriteLine("Logou krai");
+                return RedirectToAction("Index");
+                //return Ok("Login realizado");
+            }
+            else
+            {
+                System.Diagnostics.Debug.WriteLine("N achou");
+                return RedirectToAction("Error");
+                //return NotFound();
+            }
         }
     }
 }
