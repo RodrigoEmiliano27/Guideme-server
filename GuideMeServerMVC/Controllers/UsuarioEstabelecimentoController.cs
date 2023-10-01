@@ -27,15 +27,26 @@ namespace GuideMeServerMVC.Controllers
         [HttpGet("Login")]
         public IActionResult Login()
         {
-            System.Diagnostics.Debug.WriteLine("Chamou a tela de Login!");
+            Debug.WriteLine("Chamou a tela de Login!");
             return View("Login", new UsuarioEstabelecimentoModel());
-           // return View("Login", new LoginRequestTO());
         }
+
         [HttpGet("Index")]
         public IActionResult Index()
         {
             Debug.WriteLine("Chamou a tela de Index!");
-            return View("Menu");
+            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+            EstabelecimentoViewModel estabelecimento = new EstabelecimentoViewModel();
+            try
+            {
+                estabelecimento = _context.Estabelecimento.FirstOrDefault(o => o.Id == user.Id_Estabelecimento);
+            }catch(Exception ex) { estabelecimento = null; }
+
+            MenuViewModel menuModel = new MenuViewModel();
+            menuModel.UsuarioEstabelecimento = user;
+            menuModel.Estabelecimento = estabelecimento;
+            
+            return View("Menu", menuModel);
         }
 
         [HttpGet("Error")]
@@ -56,7 +67,7 @@ namespace GuideMeServerMVC.Controllers
         [HttpPost("create")]
         public ActionResult<object> CreateUsuario(UsuarioEstabelecimentoModel usuario)
         {
-            
+
             _context.UsuariosEstabelecimento.Add(usuario);
             _context.SaveChanges();
             return Ok("Teste Post");
@@ -70,22 +81,31 @@ namespace GuideMeServerMVC.Controllers
             bool isUsernamePasswordValid = false;
             if (usuario != null)
             {
-                System.Diagnostics.Debug.WriteLine("Entrou no login");
-                var teste = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
-                isUsernamePasswordValid = teste != null ? true : false;
-            }
-            if(isUsernamePasswordValid)
-            {
-                System.Diagnostics.Debug.WriteLine("Logou krai");
-                return RedirectToAction("Index");
-                //return Ok("Login realizado");
-            }
-            else
-            {
-                System.Diagnostics.Debug.WriteLine("N achou");
-                return RedirectToAction("Error");
-                //return NotFound();
-            }
+                Debug.WriteLine("Entrou no login");
+                //var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
+                var users = _context.UsuariosEstabelecimento.ToList();
+                Debug.WriteLine("users => " + users);
+                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login);
+
+                isUsernamePasswordValid = user != null ? true : false;
+
+                if (isUsernamePasswordValid)
+                {
+                    Debug.WriteLine("Logou krai");
+                    HttpContext.Session.SetInt32("UserId", user.Id);
+                    // Recupere o ID do usuário da sessão
+                    var userId = HttpContext.Session.GetInt32("UserId");
+                    Debug.WriteLine("userId => " + userId);
+                    return RedirectToAction("Index");
+                    //return Ok("Login realizado");
+                }
+                else
+                {
+                    Debug.WriteLine("N achou");
+                    return RedirectToAction("Error");
+                    //return NotFound();
+                }
+            } else return RedirectToAction("Error");
         }
     }
 }

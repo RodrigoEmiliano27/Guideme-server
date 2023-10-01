@@ -4,6 +4,10 @@ using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
 using System.Security.Claims;
+using System.Diagnostics;
+using Newtonsoft.Json;
+using GuideMeServerMVC.Enum;
+using Microsoft.EntityFrameworkCore;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
@@ -65,61 +69,52 @@ namespace GuideMeServerMVC.Controllers
                 return Ok("");
             }
         }
-        [Authorize]
-        [HttpPost("SalvarTag")]
-        public ActionResult<object> SalvaTag(string TagID)
+        [Authorize(Roles = "estabelecimento")]
+        [HttpPost("v1/SalvarTag")]
+        public async Task<IActionResult> SalvaTag([FromBody] TagTO tagTO)
         {
             try
             {
-                var tagInfo = _context.Tags.FirstOrDefault(x => x.TagId.Equals(TagID));
+                TagViewModel tagmodel = new TagViewModel();
+                var tagInfo = _context.Tags.AsNoTracking().FirstOrDefault(x => x.TagId.Equals(tagTO.TagID));
 
                 if (tagInfo != null)
-                    return BadRequest("Tag já existente");
-
-               // int idUsuario = ClaimsHelper.GetIntClaim(HttpContext.User.Identity as ClaimsIdentity, "id");
-
-
-                //if(idUsuario==-1)
-                   // return NotFound("Usuário não encontrado");
-
-
-                List<TagViewModel> listaTags =
-                    _context.Tags.Where(x => x.EstabelecimentoId == tagInfo.EstabelecimentoId).ToList();
-
-                List<LugaresViewModel> lista = new List<LugaresViewModel>();
-
-                foreach (TagViewModel tag in listaTags)
                 {
-                    tag.TagsPai = _context.TagsPai.Where(x => x.Id_Tag == tag.Id).ToList();
-                    var lugar = _context.Lugares.FirstOrDefault(x => x.TAG_id == tag.Id);
-                    if (lugar != null)
-                        lista.Add(lugar);
+                    if (tagInfo.EstabelecimentoId != tagTO.IdEstabelecimento)
+                        return StatusCode(StatusCodes.Status401Unauthorized);
+
+                    tagmodel.Id = tagInfo.Id;
+                    tagmodel.Nome = tagTO.TagName;
+                    tagmodel.tipoTag = tagInfo.tipoTag;
+                    tagmodel.TagId = tagInfo.TagId;
+
+                    _context.Update(tagmodel);
+                    await _context.SaveChangesAsync();
+
+                    return Ok(JsonConvert.SerializeObject(tagmodel));
                 }
+                else
+                {
+                    tagmodel.Nome = tagTO.TagName;
+                    tagmodel.tipoTag = (int)EnumTipoTag.NaoCadastrada;
+                    tagmodel.TagId = tagTO.TagID;
+                    tagmodel.EstabelecimentoId=tagTO.IdEstabelecimento;
 
-                TagsDataTO data = new TagsDataTO();
-                data.Tags = listaTags;
-                data.Lugares = lista;
+                    await _context.AddAsync(tagmodel);
+                    await _context.SaveChangesAsync();
 
-
-                return Ok(data);
+                    return Ok(JsonConvert.SerializeObject(tagmodel));
+                }
+             
             }
             catch (Exception err)
             {
-                return Ok("");
+                return StatusCode(StatusCodes.Status500InternalServerError,err.ToString());
             }
+
+            return BadRequest();
         }
 
-        [HttpPost("tag"), Authorize]
-        public TagViewModel PostTag(TagViewModel model)
-        {
-            //DAO.Insert(model)
-            //Tag tag = new Tag();
-            //tag.Id = model.Id;
-            //tag.Informacao = model.Informacao;
-            // service.Insert(usuario);
-            //await AzureStorageHelper.CreateContainerAsync($"plant-{model.id.ToString()}");
-            return model;
-
-        }
+        
     }
 }

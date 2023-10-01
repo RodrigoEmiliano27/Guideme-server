@@ -1,0 +1,23 @@
+﻿@using GuideMeServerMVC.Models
+@model EstabelecimentoViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; //enctype="multipart/form-data"
+}
+
+<body>
+    <div>
+        <h2>Cadastro de Estabelecimento</h2>
+        <form asp-action="Create" method="post">
+            <label for="Nome" class="control-label">Nome</label>
+            <input type="text" Name="Nome" value="@Model.Nome" class="form-control" />
+            <span asp-validation-for="Nome" class="text-danger"></span>
+            <br />
+
+            <input type="submit" value="Criar novo estabelecimento" class="btn-info" />
+            &nbsp;&nbsp;&nbsp;
+            <a asp-controller="UsuarioEstabelecimento" asp-action="Index" class="btn-light">Voltar</a>
+            <br />
+        </form>
+    </div>
+</body>
+
