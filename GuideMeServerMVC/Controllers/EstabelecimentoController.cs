@@ -14,6 +14,7 @@ namespace GuideMeServerMVC.Controllers
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
+    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EstabelecimentoController : Controller
     {
@@ -25,8 +26,7 @@ namespace GuideMeServerMVC.Controllers
             _configuration = configuration;
             _context = context;
         }
-        //[Authorize]
-        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        [Authorize(Roles ="estabelecimento")]
         [HttpGet("v1/EstabInfo")]
         public async Task<IActionResult> GetEstabInfo()
         {

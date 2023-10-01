@@ -11,6 +11,7 @@ using GuideMeServerMVC.Data;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.TO;
+using Microsoft.EntityFrameworkCore;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -54,9 +55,9 @@ namespace GuideMeServerMVC.Controllers
                 if (login != null)
                 {
 
-                    var usuarioApp = _context.AppLogin.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
+                    var usuarioApp = _context.AppLogin.AsNoTracking().FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
                     if (usuarioApp == null)
-                        usuarioEstabelecimento = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
+                        usuarioEstabelecimento = _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefault(o => o.Login == login.UserName && o.Senha == login.Password);
                     // make await call to the Database to check username and password.
                     // here we only checking if password value is admin
                     if (usuarioApp != null)

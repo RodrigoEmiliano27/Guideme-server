@@ -2,7 +2,8 @@
 {
     public enum EnumTipoTag
     {
-        localizacao=0,
+        NaoCadastrada=0,
+        localizacao,
         lugar=1
     }
 }
