@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
 using System.Security.Claims;
+using System.Diagnostics;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
@@ -109,17 +110,15 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
-        [HttpPost("tag"), Authorize]
-        public TagViewModel PostTag(TagViewModel model)
+        [HttpGet("ExibirTagsEstabelecimento")]
+        public IActionResult ExibirTagsEstabelecimento()
         {
-            //DAO.Insert(model)
-            //Tag tag = new Tag();
-            //tag.Id = model.Id;
-            //tag.Informacao = model.Informacao;
-            // service.Insert(usuario);
-            //await AzureStorageHelper.CreateContainerAsync($"plant-{model.id.ToString()}");
-            return model;
+            Debug.WriteLine("Listando Tags");
+            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+            var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
 
+
+            return View("Menu", menuModel);
         }
     }
 }

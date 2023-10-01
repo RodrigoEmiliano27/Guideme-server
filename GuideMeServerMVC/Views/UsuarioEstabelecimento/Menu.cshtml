@@ -1,9 +1,16 @@
-﻿<body>
+﻿@using GuideMeServerMVC.Models
+@model MenuViewModel
+<body>
     <div>
         <h2>Menu</h2>
-        <a asp-controller="Estabelecimento" asp-action="CadastrarEstabelecimento" class="btn-light">Cadastrar Estabelecimento</a>
-
-        <p>Estabelecimento XXXX</p>
-        <button onclick="redirectToCadastro()">Cadastrar Novo Usuário</button>
+        @if (Model.UsuarioEstabelecimento != null && Model.UsuarioEstabelecimento.Id_Estabelecimento >= 0)
+        {
+            <p><b>Estabelecimento @Model.Estabelecimento.Nome</b></p>
+            <a asp-controller="Tag" asp-action="ExibirTagsEstabelecimento" class="btn-light">Exibir Tags</a>
+        }
+        else
+        {
+            <a asp-controller="Estabelecimento" asp-action="CadastrarEstabelecimento" class="btn-light">Cadastrar Estabelecimento</a>
+        }
     </div>
 </body>

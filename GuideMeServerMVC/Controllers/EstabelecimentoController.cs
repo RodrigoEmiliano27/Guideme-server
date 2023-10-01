@@ -7,13 +7,14 @@ using System.Security.Claims;
 using System.Net.Http;
 using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.Diagnostics;
 
 namespace GuideMeServerMVC.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     [Produces("application/json")]
-    [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EstabelecimentoController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -24,7 +25,8 @@ namespace GuideMeServerMVC.Controllers
             _configuration = configuration;
             _context = context;
         }
-        [Authorize]
+        //[Authorize]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
         [HttpGet("v1/EstabInfo")]
         public async Task<IActionResult> GetEstabInfo()
         {
@@ -57,6 +59,31 @@ namespace GuideMeServerMVC.Controllers
 
             return View("Login", new UsuarioEstabelecimentoModel());
             // return View("Login", new LoginRequestTO());
+        }
+
+        [HttpGet("CadastrarEstabelecimento")]
+        public IActionResult CadastrarEstabelecimento()
+        {
+            Debug.WriteLine("Chamou a tela de Cadastro de Estabelecimento!");
+            return View("CadastroEstabelecimento", new EstabelecimentoViewModel());
+        }
+
+        [HttpPost("Create")]
+        public IActionResult Create([FromForm] EstabelecimentoViewModel estabelecimento)
+        {
+            Debug.WriteLine("CreateEstabelecimento");
+            //Cadastrar o estabelecimento
+            _context.Estabelecimento.Add(estabelecimento);
+            _context.SaveChanges();
+            Debug.WriteLine("Estabelecimento criado");
+
+            //Pegar o id do estabelecimento inserido e relaciona-lo ao usuario
+            Debug.WriteLine("Estabelecimento Id => " + estabelecimento.Id);
+            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+            user.Id_Estabelecimento = estabelecimento.Id;
+            _context.UsuariosEstabelecimento.Update(user);
+            _context.SaveChanges();
+            return RedirectToAction("Index", "UsuarioEstabelecimento");
         }
     }
 }

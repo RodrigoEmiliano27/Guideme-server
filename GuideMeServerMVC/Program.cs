@@ -31,6 +31,16 @@ namespace GuideMeServerMVC
                 }
               );
 
+            //Add services to Session
+            builder.Services.AddDistributedMemoryCache();
+
+            builder.Services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.Cookie.HttpOnly = true;
+                options.Cookie.IsEssential = true;
+            });
+
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             var keyVaulEndpoint = new Uri(builder.Configuration["VaultKey"]);
@@ -70,6 +80,8 @@ namespace GuideMeServerMVC
             app.UseRouting();
 
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.MapControllerRoute(
                 name: "default",

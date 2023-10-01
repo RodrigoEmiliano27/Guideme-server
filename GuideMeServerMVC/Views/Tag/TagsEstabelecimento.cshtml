@@ -1,0 +1,34 @@
+﻿@using GuideMeServerMVC.Models
+@model UsuarioEstabelecimentoModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<body>
+    <div>
+        <h2>Tags do Estabelecimento</h2>
+        <p>Listar as TAGS</p>
+        <form asp-action="CreateUsuario" method="post" enctype="multipart/form-data">
+            <label for="login" class="control-label">Login</label>
+            <input type="text" Name="Login" value="@Model.Login" class="form-control" />
+            <span asp-validation-for="Login" class="text-danger"></span>
+            <br />
+
+            <label for="senha" class="control-label">Senha</label>
+            <input type="password" Name="Senha" value="@Model.Senha" class="form-control" />
+            <span asp-validation-for="Senha" class="text-danger"></span>
+            <br />
+
+            <label for="admin" class="control-label">Admin?</label>
+            <input type="checkbox" name="Admin" value="true" checked />
+            <span asp-validation-for="Admin" class="text-danger"></span>
+            <br />
+
+            <input type="submit" value="Criar novo usuário" class="btn-info" />
+            &nbsp;&nbsp;&nbsp;
+            <a href="/Home/index" class="btn-light">Voltar</a>
+            <br />
+        </form>
+    </div>
+</body>
+
