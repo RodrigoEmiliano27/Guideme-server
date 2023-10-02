@@ -8,6 +8,7 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using GuideMeServerMVC.Enum;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.Arm;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
@@ -155,5 +156,26 @@ namespace GuideMeServerMVC.Controllers
 
         }
 
+        [HttpPost("DeleteTag")]
+        public ActionResult<object> DeleteTag([FromBody] DeleteTagModel model)
+        {
+            Debug.WriteLine("Chamou o DeleteTag");
+            Debug.WriteLine("Id => " + model.Id);
+            var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == model.Id);
+            if(tag != null)
+            {
+                _context.Tags.Remove(tag);
+                _context.SaveChanges();
+                return Ok("tag deletada");
+            }
+            else{
+                return NotFound("tag não encontrada");
+            }
+        }
     }
+    public class DeleteTagModel
+    {
+        public int Id { get; set; }
+    }
+
 }

@@ -40,9 +40,12 @@
                             </li>
                         }
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="UsuarioEstabelecimento" asp-action="Index">Menu</a>
-                        </li>
+                        @if (ViewBag.Logado != null && ViewBag.Logado == true)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="UsuarioEstabelecimento" asp-action="Index">Estabelecimento</a>
+                            </li>
+                        }
                         @if (ViewBag.Logado != null && ViewBag.Logado == true)
                             {
                                <li class="nav-item">

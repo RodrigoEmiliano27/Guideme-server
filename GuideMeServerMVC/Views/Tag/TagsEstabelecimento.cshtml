@@ -1,13 +1,15 @@
-﻿@model List<TagViewModel> //<!DOCTYPE html>  <html>
+﻿@model List<TagViewModel> //
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
 <head>
     <title>Lista de Tags do Estabelecimento</title>
-    <!-- Inclua aqui os links para os estilos CSS necessários para estilizar a página -->
 </head>
 <body>
     <h1>Lista de Tags do Estabelecimento</h1>
 
-    <table class="table">
+    <table id="tblTags" class="table table-responsive table-striped">
         <thead>
             <tr>
                 <th>ID</th>
@@ -15,23 +17,31 @@
                 <th>Nome</th>
                 <th>Tipo de Tag</th>
                 <th>Ações</th>
-                <!-- Adicione aqui as colunas que você deseja exibir na lista -->
             </tr>
         </thead>
         <tbody>
             @foreach (var tag in Model)
             {
                 <tr>
-                    <td>@tag.Id</td>
-                    <td>@tag.TagId</td>
-
-                    <td>@tag.Nome</td>
-                    <td>@tag.tipoTag</td>
+                    <td class="Id">
+                        <span>@tag.Id</span>
+                    </td>
+                    <td class="TagId">
+                        <span>@tag.TagId</span>
+                        <input type="text" value="@tag.TagId" style="display:none" />
+                    </td>
+                    <td class="Nome">
+                        <span>@tag.Nome</span>
+                        <input type="text" value="@tag.Nome" style="display:none" />
+                    </td>
+                    <td class="tipoTag">
+                        <span>@tag.tipoTag</span>
+                        <input type="number" value="@tag.tipoTag" style="display:none" />
+                    </td>
                     <td>
                         <a asp-controller="Tag" asp-action="Editar" asp-route-id="@tag.Id">Editar</a> |
-                        <a asp-controller="Tag" asp-action="Excluir" asp-route-id="@tag.Id">Excluir</a>
+                        <a class="Delete" href="javascript:;">Excluir</a>
                     </td>
-                    <!-- Exiba outras propriedades da TagViewModel conforme necessário -->
                 </tr>
             }
         </tbody>
@@ -40,5 +50,33 @@
     <!-- Adicione aqui elementos HTML adicionais, como botões ou links -->
     <a asp-controller="UsuarioEstabelecimento" asp-action="Index" class="btn-light">Voltar</a>
 
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script type="text/javascript">
+        //Delete event handler.
+        $("body").on("click", "#tblTags .Delete", function () {
+            console.log("Delete event fired!");
+                if (confirm("Do you want to delete this row?")) {
+                    var row = $(this).closest("tr");
+                    var Id = row.find("span").html();
+                    console.log("Id: " + Id);
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("DeleteTag", "Tag")',
+                        data: JSON.stringify({ Id: Id }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            if ($("#tblTags tr").length > 2) {
+                                row.remove();
+                            } else {
+                                //row.find(".Edit").hide();
+                                row.find(".Delete").hide();
+                                row.find("span").html('&nbsp;');
+                            }
+                        }
+                    });
+                }
+            });
+    </script>
 </body>
-</html>
