@@ -1,0 +1,33 @@
+﻿@model List<LugaresViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Relação de Lugares Cadastrados</h2>
+
+<br />
+<a href="/Lugares/Create">Novo Registro</a>
+<br />
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <th>Ações</th>
+        <th>Tag</th>
+        <th>Nome</th>
+        <th>Descrição</th>
+    </tr>
+
+    @foreach (LugaresViewModel a in Model)
+    {
+        <tr>
+            <td>
+                <a href="Lugares/Edit?id=@a.Id" class="btn-info">Editar</a>
+                <a href="javascript:apagarRegistro(@a.Id, 'Lugares')" class="btn btn-danger">Apagar</a>
+            </td>
+            <td>@a.TAG_id</td>
+            <td>@a.Nome</td>
+            <td>@a.Descricao</td>
+        </tr>
+    }
+
+
+</table>

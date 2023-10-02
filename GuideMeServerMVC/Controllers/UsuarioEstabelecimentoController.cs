@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.Data;
 using GuideMeServerMVC.TO;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Mvc.Filters;
+using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -24,12 +26,7 @@ namespace GuideMeServerMVC.Controllers
             _context = context;
         }
 
-        [HttpGet("Login")]
-        public IActionResult Login()
-        {
-            Debug.WriteLine("Chamou a tela de Login!");
-            return View("Login", new UsuarioEstabelecimentoModel());
-        }
+       
 
         [HttpGet("Index")]
         public IActionResult Index()
@@ -73,39 +70,17 @@ namespace GuideMeServerMVC.Controllers
             return Ok("Teste Post");
         }
 
-        [HttpPost("FazLogin")]
-        public IActionResult FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
+        
+
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            System.Diagnostics.Debug.WriteLine("Testei");
-            //Valida usuario
-            bool isUsernamePasswordValid = false;
-            if (usuario != null)
+            if (!HelperControllers.VerificaUserLogado(HttpContext.Session))
+                context.Result = RedirectToAction("Login", "UsuarioEstabelecimento");
+            else
             {
-                Debug.WriteLine("Entrou no login");
-                //var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
-                var users = _context.UsuariosEstabelecimento.ToList();
-                Debug.WriteLine("users => " + users);
-                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login);
-
-                isUsernamePasswordValid = user != null ? true : false;
-
-                if (isUsernamePasswordValid)
-                {
-                    Debug.WriteLine("Logou krai");
-                    HttpContext.Session.SetInt32("UserId", user.Id);
-                    // Recupere o ID do usuário da sessão
-                    var userId = HttpContext.Session.GetInt32("UserId");
-                    Debug.WriteLine("userId => " + userId);
-                    return RedirectToAction("Index");
-                    //return Ok("Login realizado");
-                }
-                else
-                {
-                    Debug.WriteLine("N achou");
-                    return RedirectToAction("Error");
-                    //return NotFound();
-                }
-            } else return RedirectToAction("Error");
+                ViewBag.Logado = true;
+                base.OnActionExecuting(context);
+            }
         }
     }
 }

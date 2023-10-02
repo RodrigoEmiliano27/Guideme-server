@@ -12,6 +12,7 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authorization;
 using GuideMeServerMVC.TO;
 using Microsoft.EntityFrameworkCore;
+using System.Diagnostics;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -28,10 +29,57 @@ namespace GuideMeServerMVC.Controllers
             _context = context;
         }
 
-        public IActionResult Index()
+        public IActionResult Login()
         {
-            return View("Index", new LoginRequestTO());
+            Debug.WriteLine("Chamou a tela de Login!");
+            return View("Login", new UsuarioEstabelecimentoModel());
         }
+        /*public IActionResult LogOff()
+        {
+            HttpContext.Session.Clear();
+            return RedirectToAction("Index","Home");
+        }*/
+
+        [HttpPost("FazLogin")]
+        public IActionResult FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
+        {
+            System.Diagnostics.Debug.WriteLine("Testei");
+            //Valida usuario
+            bool isUsernamePasswordValid = false;
+            if (usuario != null)
+            {
+                Debug.WriteLine("Entrou no login");
+                //var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login && o.Senha == usuario.Senha);
+                var users = _context.UsuariosEstabelecimento.ToList();
+                Debug.WriteLine("users => " + users);
+                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Login == usuario.Login);
+
+                isUsernamePasswordValid = user != null ? true : false;
+
+                if (isUsernamePasswordValid)
+                {
+                    ViewBag.Logado = true;
+                    Debug.WriteLine("Logou krai");
+                    HttpContext.Session.SetInt32("UserId", user.Id);
+                    // Recupere o ID do usuário da sessão
+                    var userId = HttpContext.Session.GetInt32("UserId");
+                    Debug.WriteLine("userId => " + userId);
+                    return RedirectToAction("Index","Home");
+                    //return Ok("Login realizado");
+                }
+                else
+                {
+                    Debug.WriteLine("N achou");
+                    return RedirectToAction("Error");
+                    //return NotFound();
+                }
+            }
+            else return RedirectToAction("Error");
+        }
+
+       
+
+
 
         //https://localhost:7048/api/Login/login
         [HttpPost("v1/login")]

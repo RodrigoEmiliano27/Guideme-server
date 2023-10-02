@@ -1,5 +1,7 @@
 ﻿using GuideMeServerMVC.Models;
+using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
 
 namespace GuideMeServerMVC.Controllers
@@ -28,5 +30,13 @@ namespace GuideMeServerMVC.Controllers
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (HelperControllers.VerificaUserLogado(HttpContext.Session))
+                ViewBag.Logado = true;
+              
+        }
+
     }
 }
