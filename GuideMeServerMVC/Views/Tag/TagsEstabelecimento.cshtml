@@ -1,34 +1,44 @@
-﻿@using GuideMeServerMVC.Models
-@model UsuarioEstabelecimentoModel
-@{
-    Layout = "~/Views/Shared/_Layout.cshtml";
-}
+﻿@model List<TagViewModel> //<!DOCTYPE html>  <html>
 
+<head>
+    <title>Lista de Tags do Estabelecimento</title>
+    <!-- Inclua aqui os links para os estilos CSS necessários para estilizar a página -->
+</head>
 <body>
-    <div>
-        <h2>Tags do Estabelecimento</h2>
-        <p>Listar as TAGS</p>
-        <form asp-action="CreateUsuario" method="post" enctype="multipart/form-data">
-            <label for="login" class="control-label">Login</label>
-            <input type="text" Name="Login" value="@Model.Login" class="form-control" />
-            <span asp-validation-for="Login" class="text-danger"></span>
-            <br />
+    <h1>Lista de Tags do Estabelecimento</h1>
 
-            <label for="senha" class="control-label">Senha</label>
-            <input type="password" Name="Senha" value="@Model.Senha" class="form-control" />
-            <span asp-validation-for="Senha" class="text-danger"></span>
-            <br />
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tag ID</th>
+                <th>Nome</th>
+                <th>Tipo de Tag</th>
+                <th>Ações</th>
+                <!-- Adicione aqui as colunas que você deseja exibir na lista -->
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tag in Model)
+            {
+                <tr>
+                    <td>@tag.Id</td>
+                    <td>@tag.TagId</td>
 
-            <label for="admin" class="control-label">Admin?</label>
-            <input type="checkbox" name="Admin" value="true" checked />
-            <span asp-validation-for="Admin" class="text-danger"></span>
-            <br />
+                    <td>@tag.Nome</td>
+                    <td>@tag.tipoTag</td>
+                    <td>
+                        <a asp-controller="Tag" asp-action="Editar" asp-route-id="@tag.Id">Editar</a> |
+                        <a asp-controller="Tag" asp-action="Excluir" asp-route-id="@tag.Id">Excluir</a>
+                    </td>
+                    <!-- Exiba outras propriedades da TagViewModel conforme necessário -->
+                </tr>
+            }
+        </tbody>
+    </table>
 
-            <input type="submit" value="Criar novo usuário" class="btn-info" />
-            &nbsp;&nbsp;&nbsp;
-            <a href="/Home/index" class="btn-light">Voltar</a>
-            <br />
-        </form>
-    </div>
+    <!-- Adicione aqui elementos HTML adicionais, como botões ou links -->
+    <a asp-controller="UsuarioEstabelecimento" asp-action="Index" class="btn-light">Voltar</a>
+
 </body>
-
+</html>
