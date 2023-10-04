@@ -78,5 +78,67 @@
                     });
                 }
             });
+        //Edit event handler.
+        $("body").on("click", "#tblTags .Edit", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    $(this).find("input").show();
+                    $(this).find("span").hide();
+                }
+            });
+            row.find(".Update").show();
+            row.find(".Cancel").show();
+            row.find(".Delete").hide();
+            $(this).hide();
+        });
+        //Update event handler.
+        $("body").on("click", "#tblTags .Update", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    var span = $(this).find("span");
+                    var input = $(this).find("input");
+                    span.html(input.val());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Cancel").hide();
+            $(this).hide();
+
+            var tag = {};
+            tag.Id = row.find(".Id").find("span").html();
+            tag.TagId = row.find(".TagId").find("span").html();
+            tag.Nome = row.find(".Nome").find("span").html();
+            tag.tipoTag = row.find(".tipoTag").find("span").html();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteTag", "Tag")',
+                data: JSON.stringify({ Id: tag.Id, TagId: tag.TagId, Nome: tag.Nome, tipoTag: tag.tipoTag }),
+                //data: '{tag:' + JSON.stringify(tag) + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+        });
+        //Cancel event handler.
+        $("body").on("click", "#tblTags .Cancel", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    var span = $(this).find("span");
+                    var input = $(this).find("input");
+                    input.val(span.html());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Update").hide();
+            $(this).hide();
+        });
     </script>
 </body>

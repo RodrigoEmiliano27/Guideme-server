@@ -12,8 +12,14 @@
             <input type="text" Name="Nome" value="@Model.Nome" class="form-control" />
             <span asp-validation-for="Nome" class="text-danger"></span>
             <br />
-
-            <input type="submit" value="Criar novo estabelecimento" class="btn-info" />
+            @if (Model.Id > 0)
+            {
+                <input type="submit" value="Salvar" class="btn-info" />
+            }
+            else
+            {
+                <input type="submit" value="Criar novo estabelecimento" class="btn-info" />
+            }
             &nbsp;&nbsp;&nbsp;
             <a asp-controller="UsuarioEstabelecimento" asp-action="Index" class="btn-light">Voltar</a>
             <br />

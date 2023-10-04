@@ -6,6 +6,7 @@
         @if (Model.UsuarioEstabelecimento != null && Model.UsuarioEstabelecimento.Id_Estabelecimento >= 0)
         {
             <p><b>Estabelecimento @Model.Estabelecimento.Nome</b></p>
+            <a asp-controller="Estabelecimento" asp-action="EditarEstabelecimento" class="btn-light">Editar Estabelecimento</a>
             <a asp-controller="Tag" asp-action="ExibirTagsEstabelecimento" class="btn-light">Exibir Tags</a>
         }
         else

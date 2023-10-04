@@ -1,6 +1,5 @@
 ﻿using GuideMeServerMVC.Data;
 using GuideMeServerMVC.Models;
-using GuideMeServerMVC.TO;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
@@ -15,7 +14,6 @@ namespace GuideMeServerMVC.Controllers
     [ApiController]
     [Produces("application/json")]
     [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
-    //[Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
     public class EstabelecimentoController : Controller
     {
         private readonly IConfiguration _configuration;
@@ -56,12 +54,9 @@ namespace GuideMeServerMVC.Controllers
 
                 return StatusCode(StatusCodes.Status500InternalServerError, JsonConvert.SerializeObject(retorno));
             }
-
-            return View("Login", new UsuarioEstabelecimentoModel());
-            // return View("Login", new LoginRequestTO());
         }
 
-        [HttpGet("CadastrarEstabelecimento")]
+        [HttpGet("CadastrarEstabelecimento")]   //Chama a tela de cadastrar
         public IActionResult CadastrarEstabelecimento()
         {
             Debug.WriteLine("Chamou a tela de Cadastro de Estabelecimento!");
@@ -69,21 +64,49 @@ namespace GuideMeServerMVC.Controllers
         }
 
         [HttpPost("Create")]
-        public IActionResult Create([FromForm] EstabelecimentoViewModel estabelecimento)
+        public IActionResult Create([FromForm] EstabelecimentoViewModel estabelecimento) //Create e Update
         {
-            Debug.WriteLine("CreateEstabelecimento");
-            //Cadastrar o estabelecimento
-            _context.Estabelecimento.Add(estabelecimento);
-            _context.SaveChanges();
-            Debug.WriteLine("Estabelecimento criado");
+            if(estabelecimento.Id == 0) //Create
+            {
+                Debug.WriteLine("CreateEstabelecimento");
+                //Cadastrar o estabelecimento
+                _context.Estabelecimento.Add(estabelecimento);
+                _context.SaveChanges();
+                Debug.WriteLine("Estabelecimento criado");
 
-            //Pegar o id do estabelecimento inserido e relaciona-lo ao usuario
-            Debug.WriteLine("Estabelecimento Id => " + estabelecimento.Id);
-            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
-            user.Id_Estabelecimento = estabelecimento.Id;
-            _context.UsuariosEstabelecimento.Update(user);
-            _context.SaveChanges();
+                //Pegar o id do estabelecimento inserido e relaciona-lo ao usuario
+                Debug.WriteLine("Estabelecimento Id => " + estabelecimento.Id);
+                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                user.Id_Estabelecimento = estabelecimento.Id;
+                _context.UsuariosEstabelecimento.Update(user);
+                _context.SaveChanges();
+            }
+            else  //Update
+            {
+                Debug.WriteLine("Editar Estabelecimento");
+                _context.Estabelecimento.Update(estabelecimento);
+                _context.SaveChanges();
+                Debug.WriteLine("Estabelecimento Atualizado");
+            }
             return RedirectToAction("Index", "UsuarioEstabelecimento");
+        }
+
+        [HttpGet("EditarEstabelecimento")]
+        public IActionResult EditarEstabelecimento()  //Chama a tela de editar
+        {
+            Debug.WriteLine("Chamou a tela de Editar Estabelecimento!");
+            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+            if(user != null)
+            {
+                EstabelecimentoViewModel estabelecimento = new EstabelecimentoViewModel();
+                estabelecimento.Id = user.Id_Estabelecimento;
+
+                return View("CadastroEstabelecimento", estabelecimento);
+            }
+            else
+            {
+                return View("Login", new UsuarioEstabelecimentoModel());
+            }
         }
     }
 }

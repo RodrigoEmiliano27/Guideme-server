@@ -9,6 +9,7 @@ using Newtonsoft.Json;
 using GuideMeServerMVC.Enum;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Intrinsics.Arm;
+using Azure;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
@@ -144,28 +145,33 @@ namespace GuideMeServerMVC.Controllers
         }*/
 
         [HttpPost]
-        public IActionResult Editar(String tag)
+        public ActionResult UpdateTag([FromBody] EditTagModel model)
         {
-            Debug.WriteLine("tag => " + tag);
-            /*var tag = _context.Tags.FirstOrDefault(o => o.Id == id);
-            tag.Nome = novoNome;
-            _context.Tags.Update(tag);
-            _context.SaveChanges();*/
-            
-            return ExibirTagsEstabelecimento();
+            _context.Update(model);
+            _context.SaveChanges();
 
+            return new EmptyResult();
         }
 
         [HttpPost("DeleteTag")]
-        public ActionResult<object> DeleteTag([FromBody] DeleteTagModel model)
+        public async Task<IActionResult> DeleteTag([FromBody] DeleteTagModel model)
         {
+            using var transaction = _context.Database.BeginTransaction();
             Debug.WriteLine("Chamou o DeleteTag");
             Debug.WriteLine("Id => " + model.Id);
             var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == model.Id);
             if(tag != null)
             {
+                tag.TagsPai = null;
+                tag.EstabelecimentoId = 0;
+                tag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
+                _context.Update(tag);
+                await _context.SaveChangesAsync();
+
                 _context.Tags.Remove(tag);
-                _context.SaveChanges();
+
+                await transaction.CommitAsync();
+                //_context.SaveChanges();
                 return Ok("tag deletada");
             }
             else{
@@ -176,6 +182,14 @@ namespace GuideMeServerMVC.Controllers
     public class DeleteTagModel
     {
         public int Id { get; set; }
+    }
+
+    public class EditTagModel
+    {
+        public int Id { get; set; }
+        public String TagId { get; set; }
+        public String Nome { get; set; }
+        public int tipoTag { get; set; }
     }
 
 }
