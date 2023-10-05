@@ -70,17 +70,20 @@ namespace GuideMeServerMVC.Controllers
             return Ok("Teste Post");
         }
 
-        
-
         public override void OnActionExecuting(ActionExecutingContext context)
         {
-            if (!HelperControllers.VerificaUserLogado(HttpContext.Session))
-                context.Result = RedirectToAction("Login", "UsuarioEstabelecimento");
-            else
+            Debug.WriteLine("Session => " + HttpContext.Session.GetInt32("UserId").HasValue);
+            Debug.WriteLine("Session => " + HttpContext.Session.GetInt32("UserId"));
+            if (HelperControllers.VerificaUserLogado(HttpContext.Session) || HttpContext.Session.GetInt32("UserId") != null)
             {
                 ViewBag.Logado = true;
                 base.OnActionExecuting(context);
             }
+            else
+            {
+                context.Result = RedirectToAction("Login", "Login");
+            }
+
         }
     }
 }
