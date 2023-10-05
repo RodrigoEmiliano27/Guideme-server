@@ -6,26 +6,33 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
 </head>
-<body>
-    <div>
-        <h2>Login Usuário do Estabelecimento</h2>
+<body class="align-items-center py-4 bg-body-tertiary">
+    <main class="form-signin w-100 m-auto">
         <form asp-action="FazLogin" method="post" enctype="multipart/form-data">
-            <label for="login" class="control-label">Login</label>
-            <input type="text" Name="Login" value="@Model.Login" class="form-control" />
-            <span asp-validation-for="Login" class="text-danger"></span>
-            <br />
+            <h1 class="h3 mb-3 fw-normal">Login Usuário do Estabelecimento</h1>
+            <div class="form-floating" style="padding-top:10px">
+                <input type="text" class="form-control" id="floatingInput" Name="Login" value="@Model.Login" />
+                <label for="floatingInput">Usuário</label>
+                <span asp-validation-for="Login" class="text-danger"></span>
+            </div>
+            <div class="form-floating" style="padding-top:10px">
+                <input type="password" class="form-control" id="floatingPassword" Name="Senha" value="@Model.Login" />
+                <label for="floatingInput">Senha</label>
+                <span asp-validation-for="Senha" class="text-danger"></span>
+            </div>
 
-            <label for="senha" class="control-label">Senha</label>
+            <!-- <br /> -->
+            <!--<label for="senha" class="control-label">Senha</label>
             <input type="password" Name="Senha" value="@Model.Senha" class="form-control" />
             <span asp-validation-for="Senha" class="text-danger"></span>
-            <br />
-
-            <input type="submit" value="Logar" class="btn btn-primary rounded-pill px-3" />
-            &nbsp;&nbsp;&nbsp;
-            <a href="/Home/index" class="btn btn-secondary rounded-pill px-3">Voltar</a>
-            <br />
+            <br />-->
+            <div style="padding-top:10px">
+                <input type="submit" value="Logar" class="btn btn-primary rounded-pill px-3 w-50" />
+                &nbsp;&nbsp;&nbsp;
+                <a href="/Home/index" class="btn btn-secondary rounded-pill px-3">Voltar</a>
+            </div>
         </form>
-    </div>
+    </main>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 
