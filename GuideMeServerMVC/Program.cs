@@ -44,13 +44,13 @@ namespace GuideMeServerMVC
             // Add services to the container.
             builder.Services.AddControllersWithViews();
             var keyVaulEndpoint = new Uri(builder.Configuration["VaultKey"]);
-            var secretClient = new SecretClient(keyVaulEndpoint, new DefaultAzureCredential());
+            //var secretClient = new SecretClient(keyVaulEndpoint, new DefaultAzureCredential());
 
             //KeyVaultSecret kvs = secretClient.GetSecret("GuidemeWebAPPSecret");
 
 
             //builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer(kvs.Value));
-            builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer("Tokenspodpsjohinidbfjhbvkfdjhagvakfd&*¨T&(SFGD&(¨SFD(&VY&(6dfsutf7f6dod8g-f&TG08t¨&*ts&¨*dt&sfg(öd&astdecatechlabs"));
+            builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer("Server=tcp:guidemebdserver.database.windows.net,1433;Initial Catalog=guidemebd;Persist Security Info=False;User ID=guidemedbserveradm;Password=tccguideme1$;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
 
 
             var app = builder.Build();

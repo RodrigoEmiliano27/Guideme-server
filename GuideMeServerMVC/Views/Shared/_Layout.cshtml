@@ -56,6 +56,12 @@
                                     <a class="nav-link" asp-area="" asp-controller="Lugares" asp-action="Index">Lugares</a>
                                 </li>
                             }
+                            @if (ViewBag.Logado != null && ViewBag.Logado == true)
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link" asp-area="" asp-controller="Itens" asp-action="Index">Itens</a>
+                                </li>
+                            }
                         </ul>
                     </div>
                 </div>
