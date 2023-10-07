@@ -18,6 +18,6 @@ namespace GuideMeServerMVC.Models
         public string Nome { get; set; }
 
         [NotMapped]
-        public List<TagsPaiViewModel> TagsPai { get; set; }
+        public List<TagsPaiViewModel>? TagsPai { get; set; }
     }
 }

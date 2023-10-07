@@ -117,6 +117,20 @@ namespace GuideMeServerMVC.Controllers
             return BadRequest();
         }
 
+        [HttpGet("TelaEditar")]
+        //[AllowAnonymous]
+        //public IActionResult TelaEditar([FromForm] int Id)
+        public virtual async Task<IActionResult> TelaEditar(int Id)
+        {
+            Debug.WriteLine("TelaEditar");
+            var tag = _context.Tags.FirstOrDefault(o => o.Id == Id);
+            if(tag != null){
+                return View("EditarTag", tag);
+            } else {
+                return NotFound();
+            }
+        }
+
         [HttpGet("ExibirTagsEstabelecimento")]
         public IActionResult ExibirTagsEstabelecimento()
         {
@@ -145,12 +159,16 @@ namespace GuideMeServerMVC.Controllers
         }*/
 
         [HttpPost]
-        public ActionResult UpdateTag([FromBody] EditTagModel model)
+        public virtual async Task<IActionResult> UpdateTag([FromForm] TagViewModel model)
         {
             _context.Update(model);
             _context.SaveChanges();
 
-            return new EmptyResult();
+            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+            var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
+
+
+            return View("TagsEstabelecimento", tags);
         }
 
         [HttpPost("DeleteTag")]
