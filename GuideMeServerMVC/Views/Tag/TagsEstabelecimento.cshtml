@@ -42,6 +42,7 @@
                     <td>
                         <a asp-controller="Tag" asp-action="TelaEditar" asp-route-id="@tag.Id">Editar</a> |
                         <a class="Delete" href="javascript:;">Excluir</a>
+                        <a href="javascript:apagarRegistro(@tag.Id, 'Tag')" class="btn btn-danger">Apagar</a>
                     </td>
                 </tr>
             }

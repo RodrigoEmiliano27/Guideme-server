@@ -142,22 +142,6 @@ namespace GuideMeServerMVC.Controllers
             return View("TagsEstabelecimento", tags);
         }
 
-        /*[HttpPost]
-        public IActionResult Editar(int id, string novoNome)
-        {
-            var tag = _context.Tags.FirstOrDefault(o => o.Id == id);
-            tag.Nome = novoNome;
-            _context.Tags.Update(tag);
-            _context.SaveChanges();
-
-            return ExibirTagsEstabelecimento();
-            // Lógica para atualizar a tag com o novo nome
-            // Use o id para identificar a tag a ser atualizada
-            // Atualize o registro no banco de dados ou em outra fonte de dados
-
-            // Retorne um JSON ou uma resposta apropriada para indicar o sucesso ou falha da atualização
-        }*/
-
         [HttpPost]
         public virtual async Task<IActionResult> UpdateTag([FromForm] TagViewModel model)
         {
@@ -171,13 +155,15 @@ namespace GuideMeServerMVC.Controllers
             return View("TagsEstabelecimento", tags);
         }
 
-        [HttpPost("DeleteTag")]
-        public async Task<IActionResult> DeleteTag([FromBody] DeleteTagModel model)
+
+        //public async Task<IActionResult> Delete([FromBody] DeleteTagModel model)
+        [HttpPost("Delete")]
+        public async Task<IActionResult> Delete(int id)
         {
             using var transaction = _context.Database.BeginTransaction();
             Debug.WriteLine("Chamou o DeleteTag");
-            Debug.WriteLine("Id => " + model.Id);
-            var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == model.Id);
+            Debug.WriteLine("Id => " + id);
+            var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == id);
             if(tag != null)
             {
                 tag.TagsPai = null;
@@ -190,12 +176,39 @@ namespace GuideMeServerMVC.Controllers
 
                 await transaction.CommitAsync();
                 //_context.SaveChanges();
-                return Ok("tag deletada");
+                return RedirectToAction("ExibirTagsEstabelecimento", "Tag");;
             }
             else{
                 return NotFound("tag não encontrada");
             }
         }
+
+        /*public async Task<IActionResult> Delete(int id)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var tag =await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+                if (tag != null)
+                {
+                        await _context.Lugares.Where(x => x.Id == id).ExecuteDeleteAsync();
+
+                        await transaction.CommitAsync();
+
+                    }
+                }
+                              
+                return RedirectToAction("Index", "Lugares");
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
+            }
+            finally
+            {
+                await transaction.DisposeAsync();
+            }
+        }*/
     }
     public class DeleteTagModel
     {
