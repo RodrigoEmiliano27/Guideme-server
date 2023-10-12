@@ -136,11 +136,16 @@ namespace GuideMeServerMVC.Controllers
         public IActionResult ExibirTagsEstabelecimento()
         {
             Debug.WriteLine("Listando Tags");
-            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
-            var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
-
-
-            return View("TagsEstabelecimento", tags);
+            if (HttpContext.Session.GetInt32("UserId") != null)
+            {
+                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
+                return View("TagsEstabelecimento", tags);
+            }
+            else
+            {
+                return RedirectToAction("Login", "Login");
+            }
         }
 
         [HttpPost]
@@ -158,7 +163,8 @@ namespace GuideMeServerMVC.Controllers
 
 
         //public async Task<IActionResult> Delete([FromBody] DeleteTagModel model)
-        [HttpPost("Delete")]
+        [HttpGet("Delete")]
+        [AllowAnonymous]
         public async Task<IActionResult> Delete(int id)
         {
             using var transaction = _context.Database.BeginTransaction();

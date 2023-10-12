@@ -16,6 +16,9 @@ function apagarRegistro(id, controller) {
         closeOnConfirm: false
     },
         function () {
-            location.href = '/' + controller + '/Delete?id=' + id;
+            if (controller != 'Tag')
+                location.href = '/' + controller + '/Delete?id=' + id;
+            else
+                location.href = '/api/' + controller + '/Delete?id=' + id;
         });
 }
