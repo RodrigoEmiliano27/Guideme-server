@@ -10,6 +10,7 @@ using GuideMeServerMVC.Enum;
 using Microsoft.EntityFrameworkCore;
 using System.Runtime.Intrinsics.Arm;
 using Azure;
+using GuideMeServerMVC.Utils;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
@@ -25,7 +26,7 @@ namespace GuideMeServerMVC.Controllers
         }
         public IActionResult Index()
         {
-            return View();
+            return View("TagsEstabelecimento", _context.Tags.AsNoTracking().ToList());
         }
 
         //[HttpGet(Name = "GetWeatherForecast"), Authorize]
@@ -180,6 +181,20 @@ namespace GuideMeServerMVC.Controllers
             }
             else{
                 return NotFound("tag não encontrada");
+            }
+        }
+        public async Task<IActionResult> AssociarTags()
+        {
+            try
+            {
+                var tagsDisponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context);
+
+
+
+            }
+            catch (Exception erro)
+            {
+                return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
 

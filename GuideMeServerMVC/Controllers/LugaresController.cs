@@ -42,7 +42,7 @@ namespace GuideMeServerMVC.Controllers
                 ValidaDados(model, Operacao);
                 if (ModelState.IsValid == false)
                 {
-                    model.TagsDiponiveis = await GetListaTags();
+                    model.TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session,_context);
                     ViewBag.Operacao = Operacao;
                     return View("Form", model);
                 }
@@ -76,18 +76,22 @@ namespace GuideMeServerMVC.Controllers
                                    var tagAntiga = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == lugaOld.TAG_id);
                                     if (tagAntiga != null)
                                     {
-                                        TagViewModel newTag = tagAntiga;
-                                        newTag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
 
-                                        _context.Update(newTag);
-                                        await _context.SaveChangesAsync();
+                                        if (tagAntiga.Id != tagSelecionada.Id)
+                                        {
+                                            TagViewModel newTag = tagAntiga;
+                                            newTag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
 
-                                        newTag = tagSelecionada;
-                                        newTag.tipoTag = (int)EnumTipoTag.lugar;
+                                            _context.Update(newTag);
+                                            await _context.SaveChangesAsync();
 
-                                        _context.Update(newTag);
-                                        await _context.SaveChangesAsync();
+                                            newTag = tagSelecionada;
+                                            newTag.tipoTag = (int)EnumTipoTag.lugar;
 
+                                            _context.Update(newTag);
+                                            await _context.SaveChangesAsync();
+                                        }
+                                       
                                         _context.Update(model);
                                         await _context.SaveChangesAsync();
 
@@ -166,7 +170,7 @@ namespace GuideMeServerMVC.Controllers
                 if (lugar != null)
                 {
                     var tagCadastrada = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == lugar.TAG_id);
-                    lugar.TagsDiponiveis = await GetListaTags();
+                    lugar.TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context);
                     lugar.TagsDiponiveis.Insert(0, new SelectListItem(tagCadastrada.Nome, tagCadastrada.Id.ToString()));
 
                     return View("Form", lugar);
@@ -198,31 +202,7 @@ namespace GuideMeServerMVC.Controllers
 
         }
 
-        private async Task<List<SelectListItem>> GetListaTags()
-        {
-            List<SelectListItem> lista = new List<SelectListItem>();
-            try
-            {
-                int idUsuario = HelperControllers.GetUserLogadoID(HttpContext.Session);
-                
-                var usuario = await _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idUsuario);
-                if (usuario != null)
-                {
-                    var tagsDisponiveis = await _context.Tags.AsNoTracking().Where(x => x.EstabelecimentoId == usuario.Id_Estabelecimento &&
-                    x.tipoTag == (int)EnumTipoTag.NaoCadastrada).ToListAsync();
-
-
-                    foreach (TagViewModel tag in tagsDisponiveis)
-                        lista.Add(new SelectListItem(tag.Nome, tag.Id.ToString()));
-
-                }
-            }
-            catch (Exception err)
-            { 
-
-            }
-            return lista;
-        }
+       
 
         public async virtual Task<IActionResult> Create()
         {
@@ -230,7 +210,7 @@ namespace GuideMeServerMVC.Controllers
             {
                 ViewBag.Operacao = "I";
                 int idUsuario = HelperControllers.GetUserLogadoID(HttpContext.Session);
-                return View("Form", new LugaresViewModel() { TagsDiponiveis = await GetListaTags() });
+                return View("Form", new LugaresViewModel() { TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context) });
             }
             catch (Exception erro)
             {
