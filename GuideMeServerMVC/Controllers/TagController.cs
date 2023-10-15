@@ -13,6 +13,7 @@ using Azure;
 using GuideMeServerMVC.Utils;
 using System;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Reflection;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
@@ -26,7 +27,16 @@ namespace GuideMeServerMVC.Controllers
         }
         public IActionResult Index()
         {
-            return View("TagsEstabelecimento", _context.Tags.AsNoTracking().ToList());
+
+            try
+            {
+                return View("TagsEstabelecimento", _context.Tags.AsNoTracking().ToList());
+            }
+             catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
         }
 
       
@@ -145,9 +155,10 @@ namespace GuideMeServerMVC.Controllers
                     }
                 }
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 
@@ -188,75 +199,124 @@ namespace GuideMeServerMVC.Controllers
 
                 
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 
 
         public virtual async Task<IActionResult> TelaEditar(int Id)
         {
-            Debug.WriteLine("TelaEditar");
-            var tag = _context.Tags.FirstOrDefault(o => o.Id == Id);
-            if(tag != null){
-                return View("EditarTag", tag);
-            } else {
-                return NotFound();
+
+            try
+            {
+                Debug.WriteLine("TelaEditar");
+                var tag = _context.Tags.FirstOrDefault(o => o.Id == Id);
+                if (tag != null)
+                {
+                    return View("EditarTag", tag);
+                }
+                else
+                {
+                    return NotFound();
+                }
             }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+            
         }
 
         public IActionResult ExibirTagsEstabelecimento()
         {
-            Debug.WriteLine("Listando Tags");
-            if (HttpContext.Session.GetInt32("UserId") != null)
+
+            try
             {
-                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
-                var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
-                return View("TagsEstabelecimento", tags);
+                Debug.WriteLine("Listando Tags");
+                if (HttpContext.Session.GetInt32("UserId") != null)
+                {
+                    var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                    var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
+                    return View("TagsEstabelecimento", tags);
+                }
+                else
+                {
+                    return RedirectToAction("Login", "Login");
+                }
             }
-            else
+            catch (Exception err)
             {
-                return RedirectToAction("Login", "Login");
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
+
         }
 
         public virtual async Task<IActionResult> UpdateTag([FromForm] TagViewModel model)
         {
-            _context.Update(model);
-            _context.SaveChanges();
-
-            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
-            var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
 
 
-            return View("TagsEstabelecimento", tags);
+            try
+            {
+                _context.Update(model);
+                _context.SaveChanges();
+
+                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
+
+
+                return View("TagsEstabelecimento", tags);
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+           
         }
 
 
         public async Task<IActionResult> Delete(int id)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            Debug.WriteLine("Chamou o DeleteTag");
-            Debug.WriteLine("Id => " + id);
-            var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == id);
-            if(tag != null)
+
+            try
             {
-                tag.TagsPai = null;
-                tag.EstabelecimentoId = 0;
-                tag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
-                _context.Update(tag);
-                await _context.SaveChangesAsync();
+                using var transaction = _context.Database.BeginTransaction();
+                Debug.WriteLine("Chamou o DeleteTag");
+                Debug.WriteLine("Id => " + id);
+                var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == id);
+                if (tag != null)
+                {
+                    tag.TagsPai = null;
+                    tag.EstabelecimentoId = 0;
+                    tag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
+                    _context.Update(tag);
+                    await _context.SaveChangesAsync();
 
-                _context.Tags.Remove(tag);
+                    _context.Tags.Remove(tag);
 
-                await transaction.CommitAsync();
-                //_context.SaveChanges();
-                return RedirectToAction("ExibirTagsEstabelecimento", "Tag");;
+                    await transaction.CommitAsync();
+                    //_context.SaveChanges();
+                    return RedirectToAction("ExibirTagsEstabelecimento", "Tag"); ;
+                }
+                else
+                {
+                    return NotFound("tag não encontrada");
+                }
             }
-            else{
-                return NotFound("tag não encontrada");
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
+
+
+           
         }
         public async Task<IActionResult> DeleteRelacionamento(int idTagPrincipal, int idTagSecundaria)
         {
@@ -273,7 +333,9 @@ namespace GuideMeServerMVC.Controllers
 
             }
             catch (Exception err)
-            { 
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
 
             return RedirectToAction("ExibirTagsEstabelecimento", "Tag");
@@ -285,9 +347,10 @@ namespace GuideMeServerMVC.Controllers
             {
                 return View("AssociarTags", await PreparaDadosParaView());
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 

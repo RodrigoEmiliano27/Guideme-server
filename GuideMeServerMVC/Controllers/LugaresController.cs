@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -26,13 +27,11 @@ namespace GuideMeServerMVC.Controllers
             {
                 return View("Index", _context.Lugares.AsNoTracking().ToList());
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
-
-
-            return View("Index");
         }
 
         public async  Task<IActionResult> Save(LugaresViewModel model, string Operacao,int Id, List<SelectListItem> Itens)
@@ -117,9 +116,10 @@ namespace GuideMeServerMVC.Controllers
                     return RedirectToAction("Index","Lugares");
                 }
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 
@@ -150,9 +150,10 @@ namespace GuideMeServerMVC.Controllers
                               
                 return RedirectToAction("Index", "Lugares");
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
             finally
             {
@@ -179,9 +180,10 @@ namespace GuideMeServerMVC.Controllers
                 else
                     return View("Index", "Home");
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 
@@ -212,9 +214,10 @@ namespace GuideMeServerMVC.Controllers
                 int idUsuario = HelperControllers.GetUserLogadoID(HttpContext.Session);
                 return View("Form", new LugaresViewModel() { TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context) });
             }
-            catch (Exception erro)
+            catch (Exception err)
             {
-                return View("Error", new ErrorViewModel(erro.ToString()));
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
 

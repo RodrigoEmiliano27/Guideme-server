@@ -2,10 +2,12 @@
 using GuideMeServerMVC.Enum;
 using GuideMeServerMVC.Models;
 using GuideMeServerMVC.TO;
+using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -63,10 +65,11 @@ namespace GuideMeServerMVC.Controllers
         [HttpPost("v1/SalvarTag")]
         public async Task<IActionResult> SalvaTag([FromBody] TagTO tagTO)
         {
+            TagViewModel tagInfo = null;
             try
             {
                 TagViewModel tagmodel = new TagViewModel();
-                var tagInfo = _context.Tags.AsNoTracking().FirstOrDefault(x => x.TagId.Equals(tagTO.TagID));
+                tagInfo = _context.Tags.AsNoTracking().FirstOrDefault(x => x.TagId.Equals(tagTO.TagID));
 
                 if (tagInfo != null)
                 {
@@ -99,6 +102,8 @@ namespace GuideMeServerMVC.Controllers
             }
             catch (Exception err)
             {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err,
+                    EstabelecimentoID: tagInfo!=null ? tagInfo.EstabelecimentoId:null, naoProcureEstabelecimento: true);
                 return StatusCode(StatusCodes.Status500InternalServerError, err.ToString());
             }
 

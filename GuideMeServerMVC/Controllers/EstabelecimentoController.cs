@@ -8,6 +8,8 @@ using Newtonsoft.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using GuideMeServerMVC.Utils;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -22,12 +24,12 @@ namespace GuideMeServerMVC.Controllers
             _context = context;
         }
        
-        public IActionResult CadastrarEstabelecimento()
+        public async Task<IActionResult> CadastrarEstabelecimento()
         {
             Debug.WriteLine("Chamou a tela de Cadastro de Estabelecimento!");
             return View("CadastroEstabelecimento", new EstabelecimentoViewModel());
         }
-        public IActionResult Create([FromForm] EstabelecimentoViewModel estabelecimento) //Create e Update
+        public async Task<IActionResult> Create([FromForm] EstabelecimentoViewModel estabelecimento) //Create e Update
         {
             try
             {
@@ -76,16 +78,19 @@ namespace GuideMeServerMVC.Controllers
                 _context.Database.RollbackTransaction();
 
                 Debug.WriteLine("Erro durante a operação: " + ex.Message);
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, ex,
+                    naoProcureEstabelecimento: true);
                 return View(new ErrorViewModel { RequestId = ex.Message });
             }
             
         }
-        public IActionResult EditarEstabelecimento()  //Chama a tela de editar
+        public async Task<IActionResult> EditarEstabelecimento()  //Chama a tela de editar
         {
+            UsuarioEstabelecimentoModel user = null;
             try
             {
                 Debug.WriteLine("Chamou a tela de Editar Estabelecimento!");
-                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
                 if (user != null)
                 {
                     var estab = _context.Estabelecimento.FirstOrDefault(o => o.Id == user.Id_Estabelecimento);
@@ -111,6 +116,9 @@ namespace GuideMeServerMVC.Controllers
             }
             catch (Exception err)
             {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err,
+                    EstabelecimentoID: user!=null ?user.Id_Estabelecimento:null);
+
                 return View(new ErrorViewModel { RequestId = "Usuário não encontrado" });
             }
         

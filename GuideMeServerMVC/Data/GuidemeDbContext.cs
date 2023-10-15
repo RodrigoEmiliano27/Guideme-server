@@ -20,6 +20,7 @@ namespace GuideMeServerMVC.Data
         public DbSet<TagViewModel> Tags { get; set; } = null!;
         public DbSet<TagsPaiViewModel> TagsPai { get; set; } = null!;
         public DbSet<UsuarioEstabelecimentoModel> UsuariosEstabelecimento { get; set; } = null!;
+        public DbSet<LogsViewModel> Logs { get; set; } = null!;
 
 
     }

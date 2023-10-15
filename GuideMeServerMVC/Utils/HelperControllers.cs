@@ -3,6 +3,7 @@ using GuideMeServerMVC.Enum;
 using GuideMeServerMVC.Models;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Utils
 {
@@ -15,6 +16,59 @@ namespace GuideMeServerMVC.Utils
                 return true;
             else
                 return false;
+        }
+
+        public static async Task LoggerErro(ISession session,GuidemeDbContext _context,string controller,string metodo, Exception erro, string Estabelecimento=null, 
+            int? EstabelecimentoID=null,bool naoProcureEstabelecimento=false)
+        {
+            try
+            {
+                int idUsuarioLogado = GetUserLogadoID(session);
+                int idEstabelecimento = 0;
+                string NomeEstabelecimento = Estabelecimento;
+                if (!naoProcureEstabelecimento && idUsuarioLogado > 0)
+                {
+                    if (EstabelecimentoID == null)
+                    {
+                        try
+                        {
+                            var usuarioEstabelecimento = await _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idUsuarioLogado);
+                            if (usuarioEstabelecimento != null)
+                            {
+                                idEstabelecimento = usuarioEstabelecimento.Id_Estabelecimento;
+                                if (string.IsNullOrEmpty(NomeEstabelecimento))
+                                {
+                                    var estabelecimento = await _context.Estabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == usuarioEstabelecimento.Id_Estabelecimento);
+                                    if (estabelecimento != null)
+                                        NomeEstabelecimento = estabelecimento.Nome;
+                                }
+
+                            }
+                        }
+                        catch (Exception erroEstab)
+                        {
+                            await LoggerErro(session, _context, "HelperControllers", MethodBase.GetCurrentMethod().Name, erroEstab, naoProcureEstabelecimento: true);
+                        }
+                    }
+                }
+                LogsViewModel log = new LogsViewModel();
+                log.Controller = controller;
+                log.Metodo = metodo;
+                log.Usuario = idUsuarioLogado.ToString();
+                log.Estabelecimento = NomeEstabelecimento;
+                log.EstabelecimentoID = idEstabelecimento;
+                log.Erro = erro.ToString();
+                log.Data = DateTime.Now;
+
+                _context.Add(log);
+                await _context.SaveChangesAsync();
+
+            }
+            catch (Exception err)
+            {
+                //Como deu erro ao salvar um log de erro vou só mostrar no console
+                Console.WriteLine(err.ToString());
+            }
         }
 
         public static async Task<List<SelectListItem>> GetListaTags(ISession session, GuidemeDbContext _context,EnumTipoTag? tipoTag=EnumTipoTag.NaoCadastrada)

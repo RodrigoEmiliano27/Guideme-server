@@ -1,9 +1,11 @@
 ﻿using GuideMeServerMVC.Data;
 using GuideMeServerMVC.Models;
+using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
@@ -27,6 +29,7 @@ namespace GuideMeServerMVC.Controllers
         [HttpGet("v1/EstabInfo")]
         public async Task<IActionResult> GetEstabInfo()
         {
+            int idEstabelecimento = 0;
             EstabelecimentoViewModel retorno = null;
             try
             {
@@ -35,13 +38,13 @@ namespace GuideMeServerMVC.Controllers
                 if (customClaimValue == null)
                     return StatusCode(StatusCodes.Status401Unauthorized, JsonConvert.SerializeObject(retorno));
 
-                int idPrincipal = Convert.ToInt32(customClaimValue);
+                idEstabelecimento = Convert.ToInt32(customClaimValue);
 
-                if (idPrincipal <= 0)
+                if (idEstabelecimento <= 0)
                     return BadRequest(JsonConvert.SerializeObject(retorno));
 
 
-                retorno = _context.Estabelecimento.FirstOrDefault(o => o.Id == idPrincipal);
+                retorno = _context.Estabelecimento.FirstOrDefault(o => o.Id == idEstabelecimento);
 
                 if (retorno == null)
                     return StatusCode(StatusCodes.Status404NotFound, JsonConvert.SerializeObject(retorno));
@@ -50,7 +53,8 @@ namespace GuideMeServerMVC.Controllers
             }
             catch (Exception err)
             {
-
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err,
+                    EstabelecimentoID: idEstabelecimento, naoProcureEstabelecimento:true);
                 return StatusCode(StatusCodes.Status500InternalServerError, JsonConvert.SerializeObject(retorno));
             }
         }

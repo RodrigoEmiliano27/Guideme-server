@@ -12,12 +12,12 @@ using GuideMeServerMVC.TO;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc.Filters;
 using GuideMeServerMVC.Utils;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UsuarioEstabelecimentoController : Controller
+ 
+    public class UsuarioEstabelecimentoController : ControllerAutenticado
     {
         private readonly GuidemeDbContext _context;
 
@@ -27,63 +27,72 @@ namespace GuideMeServerMVC.Controllers
         }
 
        
-
-        [HttpGet("Index")]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            Debug.WriteLine("Chamou a tela de Index!");
-            var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
-            EstabelecimentoViewModel estabelecimento = new EstabelecimentoViewModel();
+
             try
             {
-                estabelecimento = _context.Estabelecimento.FirstOrDefault(o => o.Id == user.Id_Estabelecimento);
-            }catch(Exception ex) { estabelecimento = null; }
+                Debug.WriteLine("Chamou a tela de Index!");
+                var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                EstabelecimentoViewModel estabelecimento = new EstabelecimentoViewModel();
+                try
+                {
+                    estabelecimento = _context.Estabelecimento.FirstOrDefault(o => o.Id == user.Id_Estabelecimento);
+                }
+                catch (Exception ex) { estabelecimento = null; }
 
-            MenuViewModel menuModel = new MenuViewModel();
-            menuModel.UsuarioEstabelecimento = user;
-            menuModel.Estabelecimento = estabelecimento;
-            
-            return View("Menu", menuModel);
+                MenuViewModel menuModel = new MenuViewModel();
+                menuModel.UsuarioEstabelecimento = user;
+                menuModel.Estabelecimento = estabelecimento;
+
+                return View("Menu", menuModel);
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
         }
 
-        [HttpGet("Error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        [HttpGet("Cadastro")]
-        public IActionResult Cadastro()
+        public async Task<IActionResult> Cadastro()
         {
-            Debug.WriteLine("Chamou a tela de Cadastro!");
-            return View("Cadastro", new UsuarioEstabelecimentoModel());
-            // return View("Login", new LoginRequestTO());
-        }
-
-        [HttpPost("create")]
-        public ActionResult<object> CreateUsuario(UsuarioEstabelecimentoModel usuario)
-        {
-
-            _context.UsuariosEstabelecimento.Add(usuario);
-            _context.SaveChanges();
-            return Ok("Teste Post");
-        }
-
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            Debug.WriteLine("Session => " + HttpContext.Session.GetInt32("UserId").HasValue);
-            Debug.WriteLine("Session => " + HttpContext.Session.GetInt32("UserId"));
-            if (HelperControllers.VerificaUserLogado(HttpContext.Session) || HttpContext.Session.GetInt32("UserId") != null)
+            try
             {
-                ViewBag.Logado = true;
-                base.OnActionExecuting(context);
+                Debug.WriteLine("Chamou a tela de Cadastro!");
+                return View("Cadastro", new UsuarioEstabelecimentoModel());
+                // return View("Login", new LoginRequestTO());
             }
-            else
+            catch (Exception err)
             {
-                context.Result = RedirectToAction("Login", "Login");
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
 
         }
+
+        public async Task<IActionResult> CreateUsuario(UsuarioEstabelecimentoModel usuario)
+        {
+            try
+            {
+                _context.UsuariosEstabelecimento.Add(usuario);
+                _context.SaveChanges();
+                return Ok("Teste Post");
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+           
+        }
+
+       
     }
 }
