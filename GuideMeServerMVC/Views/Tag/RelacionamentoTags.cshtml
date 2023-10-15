@@ -1,0 +1,34 @@
+﻿@using GuideMeServerMVC.TO
+@model ContainerAssociacaoTagsTO
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2>Relacionamentos da Tag @Model.TagOriginal.Nome</h2>
+
+ <br />
+ <a href="/Tag/AssociarTags">Associar Tags</a>
+ <br />
+
+<table class="table table-responsive table-striped">
+    <tr>
+        <th>Tag Principal</th>
+        <th>Tag Secundaria</th>
+        <th>Direção</th>
+        <th>Ações</th>
+    </tr>
+
+    @foreach (AssociacaoTagTO a in Model.Relacionamentos)
+    {
+        <tr>
+            
+            <td>@a.TagPrincipal.Nome</td>
+            <td>@a.TagSecundaria.Nome</td>
+            <td>@a.Direcao</td>
+             <td>
+                <a href="javascript:apagarRegistroRelacionamentoTag(@a.TagPrincipal.Id,@a.TagSecundaria.Id, 'Tag')" class="btn btn-danger">Apagar</a>
+            </td>
+        </tr>
+    }
+
+
+</table>

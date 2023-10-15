@@ -11,12 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using System.Runtime.Intrinsics.Arm;
 using Azure;
 using GuideMeServerMVC.Utils;
+using System;
+using Microsoft.AspNetCore.Mvc.Filters;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
     public class TagController : Controller
     {
         private readonly GuidemeDbContext _context;
@@ -29,98 +29,172 @@ namespace GuideMeServerMVC.Controllers
             return View("TagsEstabelecimento", _context.Tags.AsNoTracking().ToList());
         }
 
-        //[HttpGet(Name = "GetWeatherForecast"), Authorize]
-        //https://localhost:7048/api/Tag/tag?id=1
-        /*[HttpGet("tag"), Authorize]
-        public TagViewModel GetTag(string id)
+      
+        protected async Task<CadastrarAssociacaoTagsTO> PreparaDadosParaView()
         {
-            return Ok("TESTE");
-        }*/
-        [Authorize(Roles = "app")]
-        [HttpGet("GetTagData")]
-        public ActionResult<object> GetData(string TagID)
+            var tagsDisponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context, EnumTipoTag.lugar);
+            var direcoesDisponiveis = System.Enum.GetNames(typeof(EnumDirecao)).ToList();
+            CadastrarAssociacaoTagsTO associacaoTagsTO = new CadastrarAssociacaoTagsTO();
+            associacaoTagsTO.DirecoesDisponiveis = HelperControllers.GetListaDirecoes();
+            associacaoTagsTO.TagsDiponiveis = tagsDisponiveis;
+            return associacaoTagsTO;
+        }
+
+        protected virtual void ValidaDados(CadastrarAssociacaoTagsTO model,out TagViewModel _menorTag,out TagViewModel _maiorTag)
+        {
+            ModelState.Clear();
+            int menorTag = 0;
+            int maiorTag = 0;
+            string menorTagNome = "";
+            string maiorTagNome = "";
+            _menorTag = null;
+            _maiorTag = null;
+
+            if (model.TagPrincipalSelecionada <= 0)
+                ModelState.AddModelError("TagPrincipalSelecionada", "Por favor selecione uma tag disponível!");
+
+            if (model.TagSecundariaSelecionada <= 0)
+                ModelState.AddModelError("TagSecundariaSelecionada", "Por favor selecione uma tag disponível!");
+
+            if (model.TagSecundariaSelecionada == model.TagPrincipalSelecionada)
+            {
+                ModelState.AddModelError("TagPrincipalSelecionada", "A tag principal e a secundaria não podem ser as mesmas!");
+                ModelState.AddModelError("TagSecundariaSelecionada", "A tag principal e a secundaria não podem ser as mesmas!");
+            }
+
+
+            if (model.TagPrincipalSelecionada < model.TagSecundariaSelecionada)
+            {
+                menorTag = model.TagPrincipalSelecionada;
+                menorTagNome = "TagPrincipalSelecionada";
+                maiorTag = model.TagSecundariaSelecionada;
+                maiorTagNome = "TagSecundariaSelecionada";
+
+            }
+            else
+            {
+                menorTag = model.TagSecundariaSelecionada;
+                menorTagNome = "TagSecundariaSelecionada";
+                maiorTag = model.TagPrincipalSelecionada;
+                maiorTagNome = "TagPrincipalSelecionada";
+            }
+
+
+            if (model.TagPrincipalSelecionada > 0 && model.TagSecundariaSelecionada > 0 &&
+                model.TagSecundariaSelecionada != model.TagPrincipalSelecionada)
+            {
+                _menorTag = _context.Tags.AsNoTracking().FirstAsync(x => x.Id == menorTag).Result;
+                _maiorTag = _context.Tags.AsNoTracking().FirstAsync(x => x.Id == maiorTag).Result;
+
+                if(_menorTag==null)
+                    ModelState.AddModelError(menorTagNome, "Tag não foi encontrada!");
+                if(_maiorTag==null)
+                    ModelState.AddModelError(maiorTagNome, "Tag não foi encontrada!");
+
+             
+
+            }
+            
+
+
+        }
+
+        public async Task<IActionResult> Save(CadastrarAssociacaoTagsTO model)
         {
             try
             {
-                var tagInfo = _context.Tags.FirstOrDefault(x => x.TagId.Equals(TagID));
+ 
+                TagViewModel menorTag = null, maioTag=null;
 
-                if (tagInfo == null)
-                    return Ok("Not Found");
+                ValidaDados(model, out menorTag, out maioTag);
 
-                List<TagViewModel> listaTags =
-                    _context.Tags.Where(x => x.EstabelecimentoId == tagInfo.EstabelecimentoId).ToList();
-
-                List<LugaresViewModel> lista = new List<LugaresViewModel>();
-
-                foreach (TagViewModel tag in listaTags)
+                if (ModelState.IsValid == false)
+                    return View("AssociarTags", await PreparaDadosParaView());
+                else
                 {
-                    tag.TagsPai = _context.TagsPai.Where(x => x.Id_Tag == tag.Id).ToList();
-                    var lugar = _context.Lugares.FirstOrDefault(x => x.TAG_id == tag.Id);
-                    if (lugar != null)
-                        lista.Add(lugar);
+                    var TagRelacionamento = await  _context.TagsPai.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Tag_Pai == menorTag.Id
+                    && x.Id_Tag == maioTag.Id);
+
+                    TagsPaiViewModel tagPai = new TagsPaiViewModel();
+                    tagPai.Id_Tag_Pai = menorTag.Id;
+                    tagPai.Id_Tag = maioTag.Id;
+                    tagPai.Direcao = model.DirecaoSelecionada;
+
+
+                    if (TagRelacionamento == null)
+                    {                     
+                        _context.Add(tagPai);
+                        await _context.SaveChangesAsync();
+                    }
+                    else 
+                    {
+                        tagPai.Id=TagRelacionamento.Id; 
+                        _context.Update(tagPai);
+                        await _context.SaveChangesAsync();
+                    }
+
+                    if (HttpContext.Session.GetInt32("UserId") != null)
+                    {
+                        var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                        var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
+                        return View("TagsEstabelecimento", tags);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Login");
+                    }
                 }
-
-                TagsDataTO data = new TagsDataTO();
-                data.Tags = listaTags;
-                data.Lugares = lista;
-
-
-                return Ok(data);
             }
-            catch (Exception err)
+            catch (Exception erro)
             {
-                return Ok("");
+                return View("Error", new ErrorViewModel(erro.ToString()));
             }
         }
-        [Authorize(Roles = "estabelecimento")]
-        [HttpPost("v1/SalvarTag")]
-        public async Task<IActionResult> SalvaTag([FromBody] TagTO tagTO)
+
+        public async Task<IActionResult> VisualizarRelacionamentos(int Id)
         {
             try
             {
-                TagViewModel tagmodel = new TagViewModel();
-                var tagInfo = _context.Tags.AsNoTracking().FirstOrDefault(x => x.TagId.Equals(tagTO.TagID));
-
-                if (tagInfo != null)
+                TagViewModel model = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id);
+                if (model != null)
                 {
-                    if (tagInfo.EstabelecimentoId != tagTO.IdEstabelecimento)
-                        return StatusCode(StatusCodes.Status401Unauthorized);
+                    List<AssociacaoTagTO> lista = new List<AssociacaoTagTO>();
+                    var tagsRelacionamento = _context.TagsPai.AsNoTracking().Where(x => x.Id_Tag_Pai == model.Id || x.Id_Tag == model.Id).ToList();
+                    foreach (var relacionamento in tagsRelacionamento)
+                    {
+                        var TagPrincipal = await _context.Tags.AsNoTracking().FirstAsync(x => x.Id == relacionamento.Id_Tag_Pai);
+                        var TagSecundaria = await _context.Tags.AsNoTracking().FirstAsync(x => x.Id == relacionamento.Id_Tag);
 
-                    tagmodel.Id = tagInfo.Id;
-                    tagmodel.Nome = tagTO.TagName;
-                    tagmodel.tipoTag = tagInfo.tipoTag;
-                    tagmodel.TagId = tagInfo.TagId;
+                        if (TagPrincipal != null && TagSecundaria != null)
+                            lista.Add(new AssociacaoTagTO() {TagPrincipal = TagPrincipal, TagSecundaria = TagSecundaria, Direcao = (EnumDirecao)relacionamento.Direcao });
+                    }
 
-                    _context.Update(tagmodel);
-                    await _context.SaveChangesAsync();
+                    return View("RelacionamentoTags", new ContainerAssociacaoTagsTO() { TagOriginal=model, Relacionamentos=lista});
 
-                    return Ok(JsonConvert.SerializeObject(tagmodel));
                 }
                 else
                 {
-                    tagmodel.Nome = tagTO.TagName;
-                    tagmodel.tipoTag = (int)EnumTipoTag.NaoCadastrada;
-                    tagmodel.TagId = tagTO.TagID;
-                    tagmodel.EstabelecimentoId = tagTO.IdEstabelecimento;
-
-                    await _context.AddAsync(tagmodel);
-                    await _context.SaveChangesAsync();
-
-                    return Ok(JsonConvert.SerializeObject(tagmodel));
+                    if (HttpContext.Session.GetInt32("UserId") != null)
+                    {
+                        var user = _context.UsuariosEstabelecimento.FirstOrDefault(o => o.Id == HttpContext.Session.GetInt32("UserId"));
+                        var tags = _context.Tags.Where(o => o.EstabelecimentoId == user.Id_Estabelecimento).ToList();
+                        return View("TagsEstabelecimento", tags);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Login", "Login");
+                    }
                 }
 
+                
             }
-            catch (Exception err)
+            catch (Exception erro)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError, err.ToString());
+                return View("Error", new ErrorViewModel(erro.ToString()));
             }
-
-            return BadRequest();
         }
 
-        [HttpGet("TelaEditar")]
-        //[AllowAnonymous]
-        //public IActionResult TelaEditar([FromForm] int Id)
+
         public virtual async Task<IActionResult> TelaEditar(int Id)
         {
             Debug.WriteLine("TelaEditar");
@@ -132,7 +206,6 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
-        [HttpGet("ExibirTagsEstabelecimento")]
         public IActionResult ExibirTagsEstabelecimento()
         {
             Debug.WriteLine("Listando Tags");
@@ -148,7 +221,6 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
-        [HttpPost]
         public virtual async Task<IActionResult> UpdateTag([FromForm] TagViewModel model)
         {
             _context.Update(model);
@@ -162,9 +234,6 @@ namespace GuideMeServerMVC.Controllers
         }
 
 
-        //public async Task<IActionResult> Delete([FromBody] DeleteTagModel model)
-        [HttpGet("Delete")]
-        [AllowAnonymous]
         public async Task<IActionResult> Delete(int id)
         {
             using var transaction = _context.Database.BeginTransaction();
@@ -189,14 +258,32 @@ namespace GuideMeServerMVC.Controllers
                 return NotFound("tag não encontrada");
             }
         }
+        public async Task<IActionResult> DeleteRelacionamento(int idTagPrincipal, int idTagSecundaria)
+        {
+
+            try
+            {
+                var relacionamento = await _context.TagsPai.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Tag_Pai == idTagPrincipal && x.Id_Tag == idTagSecundaria);
+                if (relacionamento != null)
+                {
+                    _context.Remove(relacionamento);
+                    await _context.SaveChangesAsync();
+                }
+               
+
+            }
+            catch (Exception err)
+            { 
+            }
+
+            return RedirectToAction("ExibirTagsEstabelecimento", "Tag");
+
+        }
         public async Task<IActionResult> AssociarTags()
         {
             try
             {
-                var tagsDisponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context);
-
-
-
+                return View("AssociarTags", await PreparaDadosParaView());
             }
             catch (Exception erro)
             {
@@ -204,32 +291,18 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
-        /*public async Task<IActionResult> Delete(int id)
+        public override void OnActionExecuting(ActionExecutingContext context)
         {
-            using var transaction = _context.Database.BeginTransaction();
-            try
+            if (!HelperControllers.VerificaUserLogado(HttpContext.Session))
+                context.Result = RedirectToAction("Login", "Login");
+            else
             {
-                var tag =await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                if (tag != null)
-                {
-                        await _context.Lugares.Where(x => x.Id == id).ExecuteDeleteAsync();
+                ViewBag.Logado = true;
+                base.OnActionExecuting(context);
+            }
+        }
 
-                        await transaction.CommitAsync();
-
-                    }
-                }
-                              
-                return RedirectToAction("Index", "Lugares");
-            }
-            catch (Exception erro)
-            {
-                return View("Error", new ErrorViewModel(erro.ToString()));
-            }
-            finally
-            {
-                await transaction.DisposeAsync();
-            }
-        }*/
+     
     }
     public class DeleteTagModel
     {

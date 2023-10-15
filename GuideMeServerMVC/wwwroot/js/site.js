@@ -22,3 +22,21 @@ function apagarRegistro(id, controller) {
                 location.href = '/api/' + controller + '/Delete?id=' + id;
         });
 }
+
+function apagarRegistroRelacionamentoTag(idTagPrincipal,idTagSecundaria, controller) {
+
+    swal({
+        title: "Tem certeza?",
+        text: "O registro será apagado para sempre!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        cancelButtonClass: "btn-info",
+        confirmButtonText: "Sim",
+        cancelButtonText: "Não!",
+        closeOnConfirm: false
+    },
+        function () {
+            location.href = '/' + controller + '/DeleteRelacionamento?idTagPrincipal=' + idTagPrincipal + '&idTagSecundaria=' + idTagSecundaria;
+        });
+}

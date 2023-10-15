@@ -17,7 +17,7 @@ namespace GuideMeServerMVC.Utils
                 return false;
         }
 
-        public static async Task<List<SelectListItem>> GetListaTags(ISession session, GuidemeDbContext _context)
+        public static async Task<List<SelectListItem>> GetListaTags(ISession session, GuidemeDbContext _context,EnumTipoTag? tipoTag=EnumTipoTag.NaoCadastrada)
         {
             List<SelectListItem> lista = new List<SelectListItem>();
             try
@@ -27,14 +27,37 @@ namespace GuideMeServerMVC.Utils
                 var usuario = await _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idUsuario);
                 if (usuario != null)
                 {
-                    var tagsDisponiveis = await _context.Tags.AsNoTracking().Where(x => x.EstabelecimentoId == usuario.Id_Estabelecimento &&
-                    x.tipoTag == (int)EnumTipoTag.NaoCadastrada).ToListAsync();
+                    List<TagViewModel> tagsDisponiveis = new List<TagViewModel>();
+                    if (tipoTag != null)
+                    {
+                        tagsDisponiveis = await _context.Tags.AsNoTracking().Where(x => x.EstabelecimentoId == usuario.Id_Estabelecimento &&
+                        x.tipoTag == (int)tipoTag).ToListAsync();
+                    }
+                    else
+                        tagsDisponiveis = await _context.Tags.AsNoTracking().ToListAsync();
+
 
 
                     foreach (TagViewModel tag in tagsDisponiveis)
                         lista.Add(new SelectListItem(tag.Nome, tag.Id.ToString()));
 
                 }
+            }
+            catch (Exception err)
+            {
+
+            }
+            return lista;
+        }
+        public static List<SelectListItem> GetListaDirecoes()
+        {
+            List<SelectListItem> lista = new List<SelectListItem>();
+            try
+            {
+                var direcoes =System.Enum.GetNames(typeof(EnumDirecao)).ToList();
+                for (int n = 0; n < direcoes.Count; n++)
+                    lista.Add(new SelectListItem(direcoes[n], n.ToString()));
+               
             }
             catch (Exception err)
             {

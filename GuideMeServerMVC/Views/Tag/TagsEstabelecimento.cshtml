@@ -11,7 +11,7 @@
     <h1>Lista de Tags do Estabelecimento</h1>
 
     <br />
-    <a href="/Tags/Create">Associar Tags</a>
+    <a href="/Tag/AssociarTags">Associar Tags</a>
     <br />
 
     <table id="tblTags" class="table table-responsive table-striped table-striped-color:#e0b3ff">
@@ -45,8 +45,8 @@
                     </td>
                     <td>
                         <a asp-controller="Tag" asp-action="TelaEditar" asp-route-id="@tag.Id">Editar</a> |
-                        <a class="Delete" href="javascript:;">Excluir</a>
-                        <a href="javascript:apagarRegistro(@tag.Id, 'Tag')" class="btn btn-danger">Apagar</a>
+                        <a href="javascript:apagarRegistro(@tag.Id, 'Tag')" class="btn btn-danger">Apagar</a> |
+                        <a asp-controller="Tag" asp-action="VisualizarRelacionamentos" asp-route-id="@tag.Id">Visualizar tags relacionadas</a> |
                     </td>
                 </tr>
             }
