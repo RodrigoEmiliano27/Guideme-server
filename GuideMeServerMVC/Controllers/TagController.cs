@@ -17,7 +17,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace GuideMeServerMVC.Controllers
 {
-    public class TagController : Controller
+    public class TagController : ControllerAutenticado
     {
         private readonly GuidemeDbContext _context;
         public TagController(GuidemeDbContext context)
@@ -291,30 +291,8 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            if (!HelperControllers.VerificaUserLogado(HttpContext.Session))
-                context.Result = RedirectToAction("Login", "Login");
-            else
-            {
-                ViewBag.Logado = true;
-                base.OnActionExecuting(context);
-            }
-        }
-
      
     }
-    public class DeleteTagModel
-    {
-        public int Id { get; set; }
-    }
-
-    public class EditTagModel
-    {
-        public int Id { get; set; }
-        public String TagId { get; set; }
-        public String Nome { get; set; }
-        public int tipoTag { get; set; }
-    }
+   
 
 }

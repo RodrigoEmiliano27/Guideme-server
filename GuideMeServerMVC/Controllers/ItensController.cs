@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace GuideMeServerMVC.Controllers
 {
-    public class ItensController : Controller
+    public class ItensController : ControllerAutenticado
     {
         private readonly IConfiguration _configuration;
         private readonly GuidemeDbContext _context;
@@ -217,15 +217,6 @@ namespace GuideMeServerMVC.Controllers
         }
 
 
-        public override void OnActionExecuting(ActionExecutingContext context)
-        {
-            if (!HelperControllers.VerificaUserLogado(HttpContext.Session))
-                context.Result = RedirectToAction("Login", "Login");
-            else
-            {
-                ViewBag.Logado = true;
-                base.OnActionExecuting(context);
-            }
-        }
+       
     }
 }
