@@ -34,7 +34,12 @@ namespace GuideMeServerMVC.Services
             return model;
         }
 
-        public async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
+        public override Dictionary<string, string> ValidarDados(TagsPaiViewModel model)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -77,10 +82,6 @@ namespace GuideMeServerMVC.Services
             }
 
             return false;
-        }
-        public override Dictionary<string, string> ValidarDados(TagsPaiViewModel model)
-        {
-            throw new NotImplementedException();
         }
     }
 }

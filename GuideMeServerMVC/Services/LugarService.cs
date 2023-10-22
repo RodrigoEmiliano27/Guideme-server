@@ -108,7 +108,30 @@ namespace GuideMeServerMVC.Services
         }
 
 
-        public async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
+        public async Task<bool> isTagLugar(TagViewModel tag)
+        {
+            return await _context.Lugares.AsNoTracking().AnyAsync(x=>x.TAG_id==tag.Id);
+        }
+
+        public override Dictionary<string, string> ValidarDados(LugaresViewModel model)
+        {
+            Dictionary<string, string> erros = new Dictionary<string, string>();
+            if (model.TAG_id <= 0)
+                erros.Add("TagSelecionada", "Por favor selecione uma tag disponível!");
+
+            if (string.IsNullOrEmpty(model.Nome) || string.IsNullOrEmpty(model.Nome.Trim()))
+                erros.Add("Nome", "Nome inválido!");
+
+            if (string.IsNullOrEmpty(model.Descricao) || string.IsNullOrEmpty(model.Descricao.Trim()))
+                erros.Add("Descricao", "Descricao inválida!");
+
+            if (erros.Count > 0)
+                return erros;
+            else
+                return null;
+        }
+
+        public override async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -134,9 +157,9 @@ namespace GuideMeServerMVC.Services
                             _context.Remove(tagCadastrada);
                             await _context.SaveChangesAsync();
                         }
-                        
 
-                        
+
+
 
 
                         await transaction.CommitAsync();
@@ -155,28 +178,6 @@ namespace GuideMeServerMVC.Services
             }
 
             return false;
-        }
-        public async Task<bool> isTagLugar(TagViewModel tag)
-        {
-            return await _context.Lugares.AsNoTracking().AnyAsync(x=>x.TAG_id==tag.Id);
-        }
-
-        public override Dictionary<string, string> ValidarDados(LugaresViewModel model)
-        {
-            Dictionary<string, string> erros = new Dictionary<string, string>();
-            if (model.TAG_id <= 0)
-                erros.Add("TagSelecionada", "Por favor selecione uma tag disponível!");
-
-            if (string.IsNullOrEmpty(model.Nome) || string.IsNullOrEmpty(model.Nome.Trim()))
-                erros.Add("Nome", "Nome inválido!");
-
-            if (string.IsNullOrEmpty(model.Descricao) || string.IsNullOrEmpty(model.Descricao.Trim()))
-                erros.Add("Descricao", "Descricao inválida!");
-
-            if (erros.Count > 0)
-                return erros;
-            else
-                return null;
         }
     }
 }

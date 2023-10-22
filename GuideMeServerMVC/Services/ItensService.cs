@@ -13,6 +13,7 @@ namespace GuideMeServerMVC.Services
         {
         }
 
+    
         public async Task<bool> isTagItem(TagViewModel tag)
         {
             return await _context.Itens.AsNoTracking().AnyAsync(x => x.TAG_id == tag.Id);
@@ -112,8 +113,7 @@ namespace GuideMeServerMVC.Services
 
             return model;
         }
-
-        public async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
+        public override async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
         {
             using var transaction = _context.Database.BeginTransaction();
             try
@@ -139,8 +139,8 @@ namespace GuideMeServerMVC.Services
                             _context.Remove(tagCadastrada);
                             await _context.SaveChangesAsync();
                         }
-                           
-                       
+
+
 
 
                         await transaction.CommitAsync();
@@ -179,5 +179,7 @@ namespace GuideMeServerMVC.Services
             else
                 return null;
         }
+
+       
     }
 }
