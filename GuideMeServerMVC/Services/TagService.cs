@@ -105,42 +105,7 @@ namespace GuideMeServerMVC.Services
                 return null;
             
         }
-        public async Task<bool> DeletarTag(int id,int idUsuario)
-        {
-            var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == id);
-            if (tag != null)
-            {
-
-                if (tag.tipoTag == (int)EnumTipoTag.lugar)
-                {
-                    LugarService _serviceLugar = new LugarService(_context);
-                    var lugar = await _serviceLugar.GetLugarByTag(tag);
-                    if (lugar != null)
-                        return await _serviceLugar.Delete(lugar.Id, idUsuario, true);
-                }
-                else if (tag.tipoTag == (int)EnumTipoTag.itens)
-                {
-                    ItensService _serviceItem = new ItensService(_context);
-                    var item = await _serviceItem.GetItemByTag(tag);
-                    if (item != null)
-                        return await _serviceItem.Delete(item.Id, idUsuario, true);
-
-                }
-                else
-                {
-                    _context.Remove(tag);
-                    return true;
-                }
-                    
-
-
-            }
-            else
-                return false;
-
-            return false;
-        }
-
+      
         public async Task<ContainerAssociacaoTagsTO> GetAssociacoesTag(int idTag)
         {
             ContainerAssociacaoTagsTO associacoes = new ContainerAssociacaoTagsTO();
@@ -193,7 +158,40 @@ namespace GuideMeServerMVC.Services
             }
         }
 
+        public override async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)
+        {
+            var tag = _context.Tags.AsNoTracking().FirstOrDefault(o => o.Id == id);
+            if (tag != null)
+            {
+
+                if (tag.tipoTag == (int)EnumTipoTag.lugar)
+                {
+                    LugarService _serviceLugar = new LugarService(_context);
+                    var lugar = await _serviceLugar.GetLugarByTag(tag);
+                    if (lugar != null)
+                        return await _serviceLugar.Delete(lugar.Id, idUsuario, true);
+                }
+                else if (tag.tipoTag == (int)EnumTipoTag.itens)
+                {
+                    ItensService _serviceItem = new ItensService(_context);
+                    var item = await _serviceItem.GetItemByTag(tag);
+                    if (item != null)
+                        return await _serviceItem.Delete(item.Id, idUsuario, true);
+
+                }
+                else
+                {
+                    _context.Remove(tag);
+                    return true;
+                }
 
 
+
+            }
+            else
+                return false;
+
+            return false;
+        }
     }
 }

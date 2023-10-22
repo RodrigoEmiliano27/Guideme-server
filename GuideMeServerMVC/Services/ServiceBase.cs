@@ -32,12 +32,14 @@ namespace GuideMeServerMVC.Services
             return null;
         }
 
+        public abstract Task<bool> Delete(int id, int idUsuario, bool deletarTag = false);
+
         public async virtual Task<List<T>> GetAll()
         {
             if (_context != null)
                 return await _context.Set<T>().AsNoTracking().ToListAsync<T>();
 
-            return null;
+            return new List<T>();
         }
 
         

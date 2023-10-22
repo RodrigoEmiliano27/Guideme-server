@@ -14,7 +14,6 @@ namespace GuideMeServerMVC.Controllers
     public class ItensController : ControllerAutenticado<ItensViewModel>
     {
         private readonly IConfiguration _configuration;
-        private readonly ItensService _service;
 
         public ItensController(IConfiguration configuration, GuidemeDbContext context)
         {
@@ -23,19 +22,10 @@ namespace GuideMeServerMVC.Controllers
 
         }
 
-        public async Task<IActionResult> Index()
-        {
-            try
-            {
-                return View("Index", await _service.GetAll());
-            }
-            catch (Exception err)
-            {
-                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
-                return View("Error", new ErrorViewModel(err.ToString()));
-            }
+       
 
-        }
+
+
 
         public async  Task<IActionResult> Save(ItensViewModel model, string Operacao)
         {

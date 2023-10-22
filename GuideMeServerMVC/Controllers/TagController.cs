@@ -173,7 +173,7 @@ namespace GuideMeServerMVC.Controllers
 
             try
             {
-               await _service.DeletarTag(id,(int)_UsuarioLogado);
+               await _service.Delete(id,(int)_UsuarioLogado);
 
                 return RedirectToAction("ExibirTagsEstabelecimento", "Tag");
             }
