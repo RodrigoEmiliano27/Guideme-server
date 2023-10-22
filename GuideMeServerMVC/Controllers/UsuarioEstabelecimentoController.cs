@@ -17,7 +17,7 @@ using System.Reflection;
 namespace GuideMeServerMVC.Controllers
 {
  
-    public class UsuarioEstabelecimentoController : ControllerAutenticado
+    public class UsuarioEstabelecimentoController : ControllerAutenticado<UsuarioEstabelecimentoModel>
     {
         private readonly GuidemeDbContext _context;
 

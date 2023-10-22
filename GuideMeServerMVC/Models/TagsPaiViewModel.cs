@@ -6,11 +6,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace GuideMeServerMVC.Models
 {
     [Table("tbTagsPai")]
-    public class TagsPaiViewModel
+    public class TagsPaiViewModel:BaseViewModel
     {
-        [Key]
-        [Column("ID")]
-        public int Id { get; set; }
 
         [Column("ID_TAG")]
         public int Id_Tag { get; set; }

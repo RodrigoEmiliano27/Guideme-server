@@ -12,14 +12,12 @@
         <h2>Edição de Tag</h2>
         <form asp-action="UpdateTag" method="post">
             <div class="row g-3">
-                <div class="col-sm-12">
-                    <label for="TagId" class="form-label">Id da Tag</label>
-                    <input type="text" Name="TagId" value="@Model.TagId" class="form-control" />
-                    <span asp-validation-for="TagId" class="text-danger"></span>
+                <div class="col-sm-12">                 
+                    <input type="text" Name="TagId" value="@Model.TagId" class="form-control" style="display: none;" />
+                    <span asp-validation-for="TagId" class="text-danger" ></span>
                 </div>
                 <div class="col-sm-12">
-                    <label for="EstabelecimentoId" class="form-label">Id do Estabelecimento</label>
-                    <input type="text" Name="EstabelecimentoId" value="@Model.EstabelecimentoId" class="form-control" readonly />                   
+                    <input type="text" Name="EstabelecimentoId" value="@Model.EstabelecimentoId" class="form-control"  style="display: none;" />                   
                     <span asp-validation-for="EstabelecimentoId" class="text-danger"></span>
                 </div>
                 <div class="col-sm-12">

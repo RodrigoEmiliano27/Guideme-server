@@ -5,8 +5,10 @@
 <h2>Cadastro de Lugares</h2>
 <form asp-action="Save" method="post">
     <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
-    <input type="hidden" name="Id" value="@Model.Id" />
+   
     <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
+
+    <input type="text" Name="Id" value="@Model.Id" class="form-control" style="display: none;" />
 
     <label for="TagSelecionada" class="control-label">TAG</label>
     <select asp-for="TAG_id" asp-items="@Model.TagsDiponiveis" class="form-control"> </select>

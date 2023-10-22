@@ -1,6 +1,7 @@
 ﻿using GuideMeServerMVC.Data;
 using GuideMeServerMVC.Enum;
 using GuideMeServerMVC.Models;
+using GuideMeServerMVC.Services;
 using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -10,22 +11,23 @@ using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
-    public class ItensController : ControllerAutenticado
+    public class ItensController : ControllerAutenticado<ItensViewModel>
     {
         private readonly IConfiguration _configuration;
-        private readonly GuidemeDbContext _context;
+        private readonly ItensService _service;
 
         public ItensController(IConfiguration configuration, GuidemeDbContext context)
         {
             _configuration = configuration;
-            _context = context;
+            _service = new ItensService(_context);
+
         }
 
         public async Task<IActionResult> Index()
         {
             try
             {
-                return View("Index", _context.Itens.AsNoTracking().ToList());
+                return View("Index", await _service.GetAll());
             }
             catch (Exception err)
             {
@@ -35,11 +37,15 @@ namespace GuideMeServerMVC.Controllers
 
         }
 
-        public async  Task<IActionResult> Save(ItensViewModel model, string Operacao,int Id, List<SelectListItem> Itens)
+        public async  Task<IActionResult> Save(ItensViewModel model, string Operacao)
         {
             try
             {
-                ValidaDados(model, Operacao);
+               
+                ModelState.Clear();
+                Dictionary<string, string> erros = _service.ValidarDados(model);
+                ProcessaErros(erros);
+
                 if (ModelState.IsValid == false)
                 {
                     model.TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context);
@@ -48,69 +54,12 @@ namespace GuideMeServerMVC.Controllers
                 }
                 else
                 {
-                   
-                    var tagSelecionada = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == model.TAG_id);
-                    if (tagSelecionada!=null)
-                    {
-                        using var transaction = _context.Database.BeginTransaction();
-                        try
-                        {
-                            if (Operacao == "I")
-                            {
-                                TagViewModel newTag = tagSelecionada;
-                                newTag.tipoTag = (int)EnumTipoTag.itens;
 
-                                _context.Update(newTag);
-                                await _context.SaveChangesAsync();
+                    if (Operacao == "I")
+                        await _service.SaveAsync(model);
+                    else
+                        await _service.UpdateAsync(model);
 
-                                _context.Add(model);
-                                await _context.SaveChangesAsync();
-
-                                transaction.Commit();
-                            }
-                            else
-                            {
-                                var itenOld = await _context.Itens.AsNoTracking().FirstOrDefaultAsync(x => x.Id == Id);
-                                if (itenOld != null)
-                                {
-                                   var tagAntiga = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == itenOld.TAG_id);
-                                    if (tagAntiga != null)
-                                    {
-                                        if (tagAntiga.Id != tagSelecionada.Id)
-                                        {
-                                            TagViewModel newTag = tagAntiga;
-                                            newTag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
-
-                                            _context.Update(newTag);
-                                            await _context.SaveChangesAsync();
-
-                                            newTag = tagSelecionada;
-                                            newTag.tipoTag = (int)EnumTipoTag.itens;
-
-                                            _context.Update(newTag);
-                                            await _context.SaveChangesAsync();
-                                        }
-                                        _context.Update(model);
-                                        await _context.SaveChangesAsync();
-
-                                        transaction.Commit();
-
-                                    }
-                                }
-
-                            }
-                        }
-                        catch (Exception err)
-                        {
-                            await transaction.RollbackAsync();
-                        }
-                        finally
-                        {
-                            transaction.Dispose();
-                        }
-                    }
-                    
-                  
 
                     return RedirectToAction("Index","Itens");
                 }
@@ -124,40 +73,18 @@ namespace GuideMeServerMVC.Controllers
 
         public async Task<IActionResult> Delete(int id)
         {
-            using var transaction = _context.Database.BeginTransaction();
+           
             try
             {
-                var lugar =await _context.Lugares.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                if (lugar != null)
-                {
-                    var tagCadastrada = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == lugar.TAG_id);
-                    if (tagCadastrada != null)
-                    {
-                        TagViewModel newTag = tagCadastrada;
-                        newTag.tipoTag = (int)EnumTipoTag.NaoCadastrada;
-
-                        _context.Update(newTag);
-                        await _context.SaveChangesAsync();
-
-                        await _context.Lugares.Where(x => x.Id == id).ExecuteDeleteAsync();
-
-
-                        await transaction.CommitAsync();
-
-                    }
-                }
-                              
-                return RedirectToAction("Index", "Lugares");
+                await _service.Delete(id, (int)_UsuarioLogado);
+                return RedirectToAction("Index", "Itens");
             }
             catch (Exception err)
             {
                 _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
                 return View("Error", new ErrorViewModel(err.ToString()));
             }
-            finally
-            {
-                await transaction.DisposeAsync();
-            }
+           
         }
 
 
@@ -166,14 +93,17 @@ namespace GuideMeServerMVC.Controllers
             try
             {
                 ViewBag.Operacao = "A";
-                var lugar = await _context.Itens.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
-                if (lugar != null)
-                {
-                    var tagCadastrada = await _context.Tags.AsNoTracking().FirstOrDefaultAsync(x => x.Id == lugar.TAG_id);
-                    lugar.TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context);
-                    lugar.TagsDiponiveis.Insert(0, new SelectListItem(tagCadastrada.Nome, tagCadastrada.Id.ToString()));
 
-                    return View("Form", lugar);
+                var item = await _service.GetById(id);
+                if (item != null)
+                {
+                    TagService _serviceTag = new TagService(_context);
+
+                    var tagCadastrada = await _serviceTag.GetById(item.TAG_id);
+                    item.TagsDiponiveis = await HelperControllers.GetListaTags(HttpContext.Session, _context);
+                    item.TagsDiponiveis.Insert(0, new SelectListItem(tagCadastrada.Nome, tagCadastrada.Id.ToString()));
+
+                    return View("Form", item);
                 }
 
                 else
@@ -186,25 +116,7 @@ namespace GuideMeServerMVC.Controllers
             }
         }
 
-        
-
-        protected virtual void ValidaDados(ItensViewModel model, string operacao)
-        {
-            ModelState.Clear();
-
-            if(model.TAG_id <= 0)
-                ModelState.AddModelError("TagSelecionada", "Por favor selecione uma tag disponível!");
-
-            if (string.IsNullOrEmpty(model.Nome) || string.IsNullOrEmpty(model.Nome.Trim()))
-                ModelState.AddModelError("Nome", "Nome inválido!");
-
-            if (string.IsNullOrEmpty(model.Descricao) || string.IsNullOrEmpty(model.Descricao.Trim()))
-                ModelState.AddModelError("Descricao", "Descricao inválida!");
-
-        }
-
-      
-
+       
         public async virtual Task<IActionResult> Create()
         {
             try

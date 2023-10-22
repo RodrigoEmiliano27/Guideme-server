@@ -6,10 +6,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace GuideMeServerMVC.Models
 {
     [Table("tbLugares")]
-    public class LugaresViewModel
+    public class LugaresViewModel:BaseViewModel
     {
-        [Key]
-        public int Id { get; set; }
+       
         [Column("ID_TAG")]
         public int TAG_id { get; set; }
         [Column("NOME")]

@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace GuideMeServerMVC.Models
 {
     [Table("tbUsuariosEstabelecimento")]
-    public class UsuarioEstabelecimentoModel
+    public class UsuarioEstabelecimentoModel:BaseViewModel
     {
         public UsuarioEstabelecimentoModel()
         {
@@ -14,9 +14,6 @@ namespace GuideMeServerMVC.Models
             Admin = false;
             Id_Estabelecimento = 0;
         }
-
-        [Key]
-        public int Id { get; set; }
         [Column("LOGIN")]
         public string Login { get; set; }
         [Column("SENHA")]

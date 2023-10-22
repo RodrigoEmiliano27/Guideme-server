@@ -4,10 +4,9 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace GuideMeServerMVC.Models
 {
     [Table("tbTags")]
-    public class TagViewModel
+    public class TagViewModel:BaseViewModel
     {
-        [Key]
-        public int Id { get; set; }
+        
         [Column("TAG")]
         public string TagId { get; set; }
         [Column("ID_ESTABELECIMENTO")]

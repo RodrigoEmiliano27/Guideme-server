@@ -11,8 +11,13 @@ namespace GuideMeServerMVC.Data
         {
             
         }
-       
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<TagViewModel>().ToTable(tb => tb.HasTrigger("trigger"));
+        }
+
+
         public DbSet<AppLoginViewModel> AppLogin { get; set; } = null!;
         public DbSet<EstabelecimentoViewModel> Estabelecimento { get; set; } = null!;
         public DbSet<LugaresViewModel> Lugares { get; set; } = null!;

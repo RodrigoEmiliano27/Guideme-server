@@ -4,7 +4,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <h2>Associação de Tags</h2>
-<form asp-action="Save" method="post">
+<form asp-action="SaveAssociacaoTags" method="post">
     <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
     <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
 
