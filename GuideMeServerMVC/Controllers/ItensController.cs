@@ -17,7 +17,8 @@ namespace GuideMeServerMVC.Controllers
 
         public ItensController(IConfiguration configuration, GuidemeDbContext context)
         {
-            _configuration = configuration;
+            _configuration = configuration;         
+            _context = context;
             _service = new ItensService(_context);
 
         }

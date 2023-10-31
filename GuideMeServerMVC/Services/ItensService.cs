@@ -83,6 +83,10 @@ namespace GuideMeServerMVC.Services
                             _context.Update(newTag);
                             await _context.SaveChangesAsync();
                         }
+                        tagAntiga.tipoTag = (int)EnumTipoTag.itens;
+                        _context.Update(tagAntiga);
+
+
                         _context.Update(model);
                         await _context.SaveChangesAsync();
 

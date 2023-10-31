@@ -24,7 +24,7 @@ namespace GuideMeServerMVC.Services
             return false;         
         }
 
-        public async virtual Task<T> GetById(int id)
+        public async virtual Task<T?> GetById(int id)
         {
             if (_context != null)
                 return await _context.Set<T>().AsNoTracking().SingleAsync<T>(x => x.Id == id);

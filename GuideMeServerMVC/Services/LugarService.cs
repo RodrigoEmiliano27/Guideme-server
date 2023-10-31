@@ -85,6 +85,11 @@ namespace GuideMeServerMVC.Services
                             await _service.UpdateAsync(newTag);
                         }
 
+                        TagViewModel tag = tagAntiga;
+                        tag.tipoTag= (int)EnumTipoTag.lugar;
+
+                        await _service.UpdateAsync(tag);
+
                         _context.Update(model);
                         await _context.SaveChangesAsync();
 

@@ -155,7 +155,6 @@ namespace GuideMeServerMVC.Controllers
             try
             {
                 await _service.UpdateAsync(model);
-
                 return View("TagsEstabelecimento", await _service.GetTagsUsuario((int)_UsuarioLogado));
             }
             catch (Exception err)

@@ -15,7 +15,6 @@ namespace GuideMeServerMVC.Controllers
     {
         private readonly IConfiguration _configuration;
         private readonly GuidemeDbContext _context;
-        private readonly LugarService _service;
 
         public LugaresController(IConfiguration configuration, GuidemeDbContext context)
         {
@@ -24,18 +23,6 @@ namespace GuideMeServerMVC.Controllers
             _service = new LugarService(_context);
         }
 
-        public async Task<IActionResult> Index()
-        {
-            try
-            {
-                return View("Index", await _service.GetAll());
-            }
-            catch (Exception err)
-            {
-                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
-                return View("Error", new ErrorViewModel(err.ToString()));
-            }
-        }
 
         public async  Task<IActionResult> Save(LugaresViewModel model, string Operacao)
         {

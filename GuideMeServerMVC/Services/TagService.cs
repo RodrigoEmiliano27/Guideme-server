@@ -4,6 +4,7 @@ using GuideMeServerMVC.Models;
 using GuideMeServerMVC.TO;
 using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -84,7 +85,20 @@ namespace GuideMeServerMVC.Services
         }
         public async Task<CadastrarAssociacaoTagsTO> GetDadosCadastroAssociacao(int idUsuario)
         {
-            var tagsDisponiveis = await HelperControllers.GetListaTags(idUsuario, _context, EnumTipoTag.lugar);
+            var tagsNaoCadastradas = await HelperControllers.GetListaTags(idUsuario, _context, EnumTipoTag.NaoCadastrada);
+            var tagsLugares = await HelperControllers.GetListaTags(idUsuario, _context, EnumTipoTag.lugar);
+            var tagsItens = await HelperControllers.GetListaTags(idUsuario, _context, EnumTipoTag.itens);
+            List<SelectListItem> tagsDisponiveis = new List<SelectListItem>();
+
+            foreach (var tag in tagsNaoCadastradas)
+                tagsDisponiveis.Add(tag);
+
+            foreach (var tag in tagsLugares)
+                tagsDisponiveis.Add(tag);
+
+            foreach (var tag in tagsItens)
+                tagsDisponiveis.Add(tag);
+
             var direcoesDisponiveis = System.Enum.GetNames(typeof(EnumDirecao)).ToList();
             CadastrarAssociacaoTagsTO associacaoTagsTO = new CadastrarAssociacaoTagsTO();
             associacaoTagsTO.DirecoesDisponiveis = HelperControllers.GetListaDirecoes();
@@ -143,19 +157,47 @@ namespace GuideMeServerMVC.Services
             tagPai.Id_Tag_Pai = menorTag.Id;
             tagPai.Id_Tag = maiorTag.Id;
             tagPai.Direcao = model.DirecaoSelecionada;
+            using var transaction = _context.Database.BeginTransaction();
 
+            try
+            {
+                if (TagRelacionamento == null)
+                {
+                    _context.Add(tagPai);
+                    await _context.SaveChangesAsync();
+                }
+                else
+                {
+                    tagPai.Id = TagRelacionamento.Id;
+                    _context.Update(tagPai);
+                    await _context.SaveChangesAsync();
+                }
+                TagViewModel tagAux = new TagViewModel();
+                if (menorTag.tipoTag == (int)EnumTipoTag.NaoCadastrada)
+                {
+                    tagAux = menorTag;
+                    tagAux.tipoTag =(int)EnumTipoTag.localizacao;
+                    _context.Update(tagAux);
 
-            if (TagRelacionamento == null)
-            {
-                _context.Add(tagPai);
-                await _context.SaveChangesAsync();
+                }
+
+                if (maiorTag.tipoTag == (int)EnumTipoTag.NaoCadastrada)
+                {
+                    tagAux = maiorTag;
+                    tagAux.tipoTag = (int)EnumTipoTag.localizacao;
+                    _context.Update(tagAux);
+
+                }
+
+                await transaction.CommitAsync();
+
             }
-            else
+            catch (Exception err)
             {
-                tagPai.Id = TagRelacionamento.Id;
-                _context.Update(tagPai);
-                await _context.SaveChangesAsync();
+                transaction.Rollback();
             }
+
+           
         }
 
         public override async Task<bool> Delete(int id, int idUsuario, bool deletarTag = false)

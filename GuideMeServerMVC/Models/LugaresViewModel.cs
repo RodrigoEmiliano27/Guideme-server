@@ -19,5 +19,8 @@ namespace GuideMeServerMVC.Models
         [NotMapped]
         public List<SelectListItem> TagsDiponiveis { get; set; } = new List<SelectListItem>();
 
+        [NotMapped]
+        public bool Navegavel { get; set; } = false;
+
     }
 }

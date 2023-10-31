@@ -20,13 +20,8 @@
                     <input type="text" Name="EstabelecimentoId" value="@Model.EstabelecimentoId" class="form-control"  style="display: none;" />                   
                     <span asp-validation-for="EstabelecimentoId" class="text-danger"></span>
                 </div>
-                <div class="col-sm-12">
-                    <label for="tipoTag" class="form-label">Tipo da Tag</label>
-                    <select class="form-select" id="tipoTag" Name="tipoTag">
-                        <option value="0">0</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                    </select>
+                <div class="col-sm-12">                 
+                    <input type="text" Name="tipoTag" value="@Model.tipoTag" class="form-control" style="display: none;" />
                 </div>
                 <div class="col-sm-12">
                     <label for="Nome" class="form-label">Nome</label>

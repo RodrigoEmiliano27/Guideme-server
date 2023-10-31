@@ -1,6 +1,7 @@
 ﻿using GuideMeServerMVC.Data;
 using GuideMeServerMVC.Enum;
 using GuideMeServerMVC.Models;
+using GuideMeServerMVC.Services;
 using GuideMeServerMVC.TO;
 using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Authorization;
@@ -26,39 +27,81 @@ namespace GuideMeServerMVC.Controllers
         }
 
         [Authorize(Roles = "app")]
-        [HttpGet("GetTagData")]
-        public ActionResult<object> GetData(string TagID)
+        [HttpGet("v1/GetTagData")]
+        public async Task<IActionResult> GetData(string TagID)
         {
             try
             {
+                var lugarService = new LugarService(_context);
+                var itenService = new ItensService(_context);
+                var tagService = new TagService(_context);
+
                 var tagInfo = _context.Tags.FirstOrDefault(x => x.TagId.Equals(TagID));
 
                 if (tagInfo == null)
-                    return Ok("Not Found");
+                    return NotFound();
 
                 List<TagViewModel> listaTags =
                     _context.Tags.Where(x => x.EstabelecimentoId == tagInfo.EstabelecimentoId).ToList();
 
+                List<TagViewModel> listaTagsNavegaveis = new List<TagViewModel>();
+
                 List<LugaresViewModel> lista = new List<LugaresViewModel>();
+                List<ItensViewModel> itens = new List<ItensViewModel>();
 
                 foreach (TagViewModel tag in listaTags)
                 {
+                    bool navegavel = false;
                     tag.TagsPai = _context.TagsPai.Where(x => x.Id_Tag == tag.Id).ToList();
-                    var lugar = _context.Lugares.FirstOrDefault(x => x.TAG_id == tag.Id);
-                    if (lugar != null)
-                        lista.Add(lugar);
+                    var tagsAux = _context.TagsPai.Where(x => x.Id_Tag_Pai == tag.Id).ToList();
+                    foreach (var tagAux in tagsAux)
+                    {
+                        if(tag.TagsPai!=null)
+                            tag.TagsPai.Add(tagAux);
+                        else
+                            tag.TagsPai = tagsAux;
+
+                    }
+
+                    if (tag.TagsPai != null && tag.TagsPai.Count > 0)
+                    {
+                        listaTagsNavegaveis.Add(tag);
+                        navegavel = true;
+                       
+                    }
+                    if (tag.tipoTag == (int)EnumTipoTag.lugar)
+                    {
+                        var lugarTag = await lugarService.GetLugarByTag(tag);
+                        if (lugarTag != null)
+                        {
+                            lugarTag.Navegavel = navegavel;
+                            lista.Add(lugarTag);
+                        }
+                            
+                    }
+                    else if (tag.tipoTag == (int)EnumTipoTag.itens)
+                    {
+                        var itenTag = await itenService.GetItemByTag(tag);
+                        if (itenTag != null)
+                        {
+                            itenTag.Navegavel = navegavel;
+                            itens.Add(itenTag);
+                        }
+                            
+                    }
                 }
 
-                TagsDataTO data = new TagsDataTO();
-                data.Tags = listaTags;
+                EstabelecimentoTagsTO data = new EstabelecimentoTagsTO();
                 data.Lugares = lista;
+                data.Itens = itens;
+                data.Tags = listaTagsNavegaveis;
 
 
                 return Ok(data);
             }
             catch (Exception err)
             {
-                return Ok("");
+                return StatusCode(StatusCodes.Status500InternalServerError, err.ToString());
             }
         }
         [Authorize(Roles = "estabelecimento")]
