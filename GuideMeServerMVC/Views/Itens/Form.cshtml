@@ -2,30 +2,66 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Cadastro de Itens</h2>
-<form asp-action="Save" method="post">
-    <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
-    <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
+<div class="card">
+    <div class="card-header">
+        <h2>Cadastro de Itens</h2>
+    </div>
+    <div class="card-body">
+        <form asp-action="Save" method="post">
+            <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
+            <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
 
-     <input type="text" Name="Id" value="@Model.Id" class="form-control" style="display: none;" />
+            <input type="text" Name="Id" value="@Model.Id" class="form-control" style="display: none;" />
 
-    <label for="TagSelecionada" class="control-label">TAG</label>
-    <select asp-for="TAG_id" asp-items="@Model.TagsDiponiveis" class="form-control"> </select>
-    <span asp-validation-for="TAG_id" class="text-danger"></span>
-    <br />
+            <label for="TagSelecionada" class="control-label">TAG</label>
+            <select asp-for="TAG_id" asp-items="@Model.TagsDiponiveis" class="form-control"> </select>
+            <span asp-validation-for="TAG_id" class="text-danger"></span>
+            <br />
 
-    <label for="Nome" class="control-label">Nome</label>
-    <input type="text" Name="Nome" value="@Model.Nome" class="form-control" />
-    <span asp-validation-for="Nome" class="text-danger"></span>
-    <br />
+            <label for="Nome" class="control-label">Nome</label>
+            <input type="text" Name="Nome" value="@Model.Nome" class="form-control" />
+            <span asp-validation-for="Nome" class="text-danger"></span>
+            <br />
 
-    <label for="Descricao" class="control-label">Descrição</label>
-    <input type="text" Name="Descricao" value="@Model.Descricao" class="form-control" />
-    <span asp-validation-for="Descricao" class="text-danger"></span>
-    <br />
+            <label for="Descricao" class="control-label">Descrição</label>
+            <input type="text" Name="Descricao" value="@Model.Descricao" class="form-control" />
+            <span asp-validation-for="Descricao" class="text-danger"></span>
+            <br />
 
-    <input type="submit" value="Salvar dados" class="btn-info" />
-    &nbsp;&nbsp;&nbsp;
-    <a href="#" onclick='javascript:history.back(-1);' class="btn-light">Voltar</a>
-    <br />
-</form>
+            <input type="submit" value="Salvar dados" class="btn btn-info" />
+            &nbsp;&nbsp;&nbsp;
+            <a href="#" onclick='javascript:history.back(-1);' class="btn btn-light">Voltar</a>
+            <br />
+        </form>
+    </div>  
+</div>
+
+
+<style>
+    body {
+        background-color: #000080;
+        color: #ffffff;
+    }
+
+    h2 {
+        color: #ffffff;
+    }
+
+    .form-control {
+        border-color: #000080;
+    }
+
+    .btn-info {
+        background-color: #000080;
+        border-color: #000080;
+        color: #ffffff;
+    }
+
+    .btn-light {
+        background-color: #ffffff;
+        border-color: #ffffff;
+        color: #000080;
+    }
+</style>
+
+

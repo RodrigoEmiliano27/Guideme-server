@@ -1,8 +1,122 @@
-﻿@{
+﻿    @{
     ViewData["Title"] = "Home Page";
 }
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
+<body>
+    <section class="py-5 text-center container">
+        <div class="row py-lg-5">
+            <div class="col-lg-10 col-md-8 mx-auto">
+                <h1 class="fw-light">Guide-Me</h1>
+                <p class="lead text-body-secondary">
+                       O Guide-Me auxilia pessoas com deficiência visual a navegagem em quaisquer ambientes fechados. O difirencial é a autonomia do usuário que a 
+                    solução garante, isso é, o usuário pode se locomover em quaisquer pontos do ambiente fechado sem a ajuda dos outros!
+                       A navegação é possibilitada através do uso da tecnologia RFID, onde são instaladas etiquetas RFID passivas no chão, que são lidas por uma bengala
+                    inteligente que transmite os IDs para o aplicativo de celular Guide-Me.
+                </p>
+            </div>
+        </div>
+    </section>
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+    <div class="album py-5 bg-body-tertiary">
+        <div class="container text-center">
+            <h1 class="fw-light" style="padding-bottom:8px">Por que escolher o Guide-Me</h1>
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="text-center" style="margin:10px">
+                            <img src="~/imagens/complexidade.png" class="img-fluid" alt="Baixa complexidade" width="50%" height="50%">
+                        </div>
+                        <h2 class="fw-light"><b>Baixa complexidade</b></h2>
+                        <div class="card-body">
+                            <p class="card-text">
+                                O projeto é mais fácil de ser implantado do que qualquer sistema de localização em ambiente fechado que utilize Wi-Fi ou
+                                Bluetooth Beacons.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="text-center" style="margin:10px">
+                            <img src="~/imagens/baixo-custo.png" class="img-fluid" alt="Baixa complexidade" width="50%" height="50%">
+                        </div>
+                        <h2 class="fw-light"><b>Baixo custo</b></h2>
+                        <div class="card-body" >
+                            <p class="card-text">
+                                Os componentes de hardware são baratos. O uso do RFID também é uma vantagem nesse sentido, em comparação com as tecnologias
+                                Wi-Fi e Bluetooth Beacons.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="text-center" style="margin:10px">
+                            <img src="~/imagens/flexibilidade.png" class="img-fluid" alt="Baixa complexidade" width="50%" height="50%">
+                        </div>
+                        <h2 class="fw-light"><b>Flexibilidade</b></h2>
+                        <div class="card-body">
+                            <p class="card-text">
+                                O Guide-Me não se limita a apenas um ambiente. Havendo cadastro das tags RFID, qualquer ambiente fechado pode ser navegável.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="text-center" style="margin:10px">
+                            <img src="~/imagens/competitivo.png" class="img-fluid" alt="Baixa complexidade" width="50%" height="50%">
+                        </div>
+                        <h2 class="fw-light"><b>Vantagem competitiva</b></h2>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Ao utilizar o Guide-Me, os clientes e os investidores do seus estabelecimentos perceberão a sua preocupação com as
+                                questões sociais. Atualmente, 99% dos investidores levam em consideração o compometimento da empresa com o ESG na hora de tomar decisões (Bússola, 2023).
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="text-center" style="margin:10px">
+                            <img src="~/imagens/ideia.png" class="img-fluid" alt="Baixa complexidade" width="50%" height="50%">
+                        </div>
+                        <h2 class="fw-light"><b>Diferencial</b></h2>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Não há solução concretizada no mercado que auxilie pessoas com deficiência visual na nagegação em ambientes fechados.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="card shadow-sm">
+                        <div class="text-center" style="margin:10px">
+                            <img src="~/imagens/extra.png" class="img-fluid" alt="Baixa complexidade" width="50%" height="50%">
+                        </div>
+                        <h2 class="fw-light"><b>Funcionalidade extra</b></h2>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Também é possível ler dados de produtos! Basta ler a tag RFID correspondente.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+
+<style>
+    .card {
+        width: 100%;
+        height: 100%;
+    }
+
+    .card-body {
+        vertical-align: middle;
+    }
+</style>
