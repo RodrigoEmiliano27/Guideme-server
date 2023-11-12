@@ -1,12 +1,14 @@
-﻿@model LugaresViewModel
+﻿@using GuideMeServerMVC.TO
+@model LugaresViewModel
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-center">Cadastro de Lugares</h2>
-
+    <div class="card">
+        <div class="card-header">
+            <h2 style="text-align: center">Cadastro de Lugares</h2>
+        </div>
+        <div class="card-body" style="margin-top:16px">
             <form asp-action="Save" method="post">
                 <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
                 <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
@@ -34,47 +36,10 @@
                 <br />
 
                 <div class="form-group text-center">
-                    <input type="submit" value="Salvar dados" class="btn btn-info" />
-                    <a href="#" onclick='javascript:history.back(-1);' class="btn btn-secondary">Voltar</a>
+                    <input type="submit" value="Salvar dados" class="btn btn-primary rounded-pill px-3" />
+                    <a href="#" onclick='javascript:history.back(-1);' class="btn btn-secondary rounded-pill px-3">Voltar</a>
                 </div>
             </form>
         </div>
     </div>
 </div>
-<style>
-    .container {
-        /*background-color: #145DA0;*/
-        padding: 20px;
-    }
-
-    h2 {
-        color: #0C2D48;
-    }
-
-    label {
-        color: #0C2D48;
-    }
-
-    input, select {
-        border: 1px solid #0C2D48;
-        border-radius: 4px;
-    }
-
-        input:focus, select:focus {
-            outline: none;
-            border-color: #2E8BC0;
-        }
-
-    button {
-        background-color: #2E8BC0;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        margin-top: 5px;
-    }
-
-        button:hover {
-            background-color: #0C2D48;
-        }
-
-</style>

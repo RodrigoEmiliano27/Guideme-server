@@ -3,32 +3,61 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<h2>Relacionamentos da Tag @Model.TagOriginal.Nome</h2>
+<h2 style="text-align: center">Relacionamentos da Tag @Model.TagOriginal.Nome</h2>
 
- <br />
- <a href="/Tag/AssociarTags">Associar Tags</a>
- <br />
 
-<table class="table table-responsive table-striped">
-    <tr>
-        <th>Tag Principal</th>
-        <th>Tag Secundaria</th>
-        <th>Direção</th>
-        <th>Ações</th>
-    </tr>
+<div style="text-align: center; margin-top:16px">
+    <a class="btn btn-primary rounded-pill px-3" href="/Tag/AssociarTags">Associar Tags</a>
+</div>
 
-    @foreach (AssociacaoTagTO a in Model.Relacionamentos)
-    {
+<table class="table-responsive table-striped" style="text-align: center; width:100%; margin-top:16px">
+    <thead>
         <tr>
-            
-            <td>@a.TagPrincipal.Nome</td>
-            <td>@a.TagSecundaria.Nome</td>
-            <td>@a.Direcao</td>
-             <td>
-                <a href="javascript:apagarRegistroRelacionamentoTag(@a.TagPrincipal.Id,@a.TagSecundaria.Id, 'Tag')" class="btn btn-danger">Apagar</a>
-            </td>
+            <th>Tag Principal</th>
+            <th>Tag Secundaria</th>
+            <th>Direção</th>
+            <th>Ações</th>
         </tr>
+    </thead>
+    <tbody>
+        @foreach (AssociacaoTagTO a in Model.Relacionamentos)
+        {
+            <tr>
+
+                <td>@a.TagPrincipal.Nome</td>
+                <td>@a.TagSecundaria.Nome</td>
+                <td>@a.Direcao</td>
+                <td>
+                    <a href="javascript:apagarRegistroRelacionamentoTag(@a.TagPrincipal.Id,@a.TagSecundaria.Id, 'Tag')" class="btn btn-danger">Apagar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a href="#" onclick='javascript:history.back(-1);' class="btn btn-secondary rounded-pill px-3" style="margin-top:16px">Voltar</a>
+
+<style>
+    tbody tr:nth-child(odd) {
+        background-color: #ade8f4;
     }
 
+    tbody tr:nth-child(even) {
+        background-color: #caf0f8;
+    }
 
-</table>
+    tbody tr {
+        background-image: url(noise.png);
+    }
+
+    table {
+        background-color: #00b4d8;
+        border-collapse: collapse;
+        border: 1px solid #0C2D48;
+    }
+
+    th, td {
+        border: 1px solid #03045e;
+        padding: 5px;
+    }
+</style>

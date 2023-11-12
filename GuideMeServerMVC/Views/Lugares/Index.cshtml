@@ -1,4 +1,5 @@
-﻿@model List<LugaresViewModel>
+﻿
+@model List<LugaresViewModel>
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
@@ -8,11 +9,11 @@
         <div class="col-md-12">
             <h2 class="text-center">Relação de Lugares Cadastrados</h2>
 
-            <br />
-            <a href="/Lugares/Create">Novo Registro</a>
-            <br />
+            <div style="text-align: center; margin-top:16px">
+                <a class="btn btn-primary rounded-pill px-3" href="/Lugares/Create">Novo Registro</a>
+            </div>
 
-            <table class="table table-responsive table-striped">
+            <table class="table-responsive table-striped" style="text-align: center; width:100%; margin-top:16px">
                 <thead>
                     <tr>
                         <th scope="col">Tag</th>
@@ -39,55 +40,29 @@
         </div>
     </div>
 </div>
+
 <style>
-    .container {
-        /*background-color: #145DA0;*/
-        padding: 20px;
+    tbody tr:nth-child(odd) {
+        background-color: #ade8f4;
     }
 
-    h2 {
-        color: #0C2D48;
+    tbody tr:nth-child(even) {
+        background-color: #caf0f8;
+    }
+
+    tbody tr {
+        background-image: url(noise.png);
     }
 
     table {
+        background-color: #00b4d8;
         border-collapse: collapse;
         border: 1px solid #0C2D48;
-        margin-top: 20px;
     }
 
     th, td {
-        border: 1px solid #145DA0;
+        border: 1px solid #03045e;
         padding: 5px;
-    }
-
-    th {
-        background-color: #145DA0;
-        color: #fff;
-    }
-
-    a {
-        color: #0C2D48;
-    }
-
-        a:hover {
-            color: #2E8BC0;
-        }
-
-    button {
-        background-color: #2E8BC0;
-        color: #fff;
-        border: none;
-        border-radius: 4px;
-        margin-top: 5px;
-    }
-
-        button:hover {
-            background-color: #0C2D48;
-        }
-
-    .table-striped > tbody > tr:nth-child(odd) > td,
-    .table-striped > tbody > tr:nth-child(odd) > th {
-        background-color: #c7effc;
     }
 </style>
 
