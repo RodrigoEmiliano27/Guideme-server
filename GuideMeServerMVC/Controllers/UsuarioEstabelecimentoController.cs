@@ -60,21 +60,7 @@ namespace GuideMeServerMVC.Controllers
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
 
-        public async Task<IActionResult> Cadastro()
-        {
-            try
-            {
-                Debug.WriteLine("Chamou a tela de Cadastro!");
-                return View("Cadastro", new UsuarioEstabelecimentoModel());
-                // return View("Login", new LoginRequestTO());
-            }
-            catch (Exception err)
-            {
-                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
-                return View("Error", new ErrorViewModel(err.ToString()));
-            }
-
-        }
+        
 
         public async Task<IActionResult> CreateUsuario(UsuarioEstabelecimentoModel usuario)
         {

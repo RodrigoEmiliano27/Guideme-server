@@ -47,6 +47,41 @@ namespace GuideMeServerMVC.Controllers
            
         }
 
+        public async Task<IActionResult> Cadastro()
+        {
+            try
+            {
+                Debug.WriteLine("Chamou a tela de Cadastro!");
+                return View("Cadastro", new UsuarioEstabelecimentoModel());
+                // return View("Login", new LoginRequestTO());
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+        }
+
+        public async Task<IActionResult> CreateUsuario(UsuarioEstabelecimentoModel usuario)
+        {
+            try
+            {
+                usuario.Id_Estabelecimento = null;
+                _context.UsuariosEstabelecimento.Add(usuario);
+                _context.SaveChanges();
+                return RedirectToAction("Index", "Home");
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+
+        }
+
+
         public async Task<IActionResult> FazLogin([FromForm] UsuarioEstabelecimentoModel usuario)
         {
 

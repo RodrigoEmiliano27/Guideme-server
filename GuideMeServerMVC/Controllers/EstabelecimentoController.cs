@@ -51,7 +51,7 @@ namespace GuideMeServerMVC.Controllers
                     if (user != null)
                     {
                         user.Id_Estabelecimento = estabelecimento.Id;
-                        _context.UsuariosEstabelecimento.Add(user);
+                        _context.Update(user);
                         _context.SaveChanges();
                         _context.Database.CommitTransaction();
                         Debug.WriteLine("funcionou?");
@@ -94,10 +94,10 @@ namespace GuideMeServerMVC.Controllers
                 if (user != null)
                 {
                     var estab = _context.Estabelecimento.FirstOrDefault(o => o.Id == user.Id_Estabelecimento);
-                    if (estab != null)
+                    if (estab != null && user.Id_Estabelecimento!=null)
                     {
                         EstabelecimentoViewModel estabelecimento = new EstabelecimentoViewModel();
-                        estabelecimento.Id = user.Id_Estabelecimento;
+                        estabelecimento.Id = (int)user.Id_Estabelecimento;
                         estabelecimento.Nome = estab.Nome;
 
                         return View("CadastroEstabelecimento", estabelecimento);

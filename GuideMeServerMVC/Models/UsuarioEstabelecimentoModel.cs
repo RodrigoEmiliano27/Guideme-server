@@ -21,7 +21,7 @@ namespace GuideMeServerMVC.Models
         [Column("ADMINISTRADOR")]
         public bool Admin { get; set; }
         [Column("Id_Estabelecimento")]
-        public int Id_Estabelecimento { get; set; }
+        public int? Id_Estabelecimento { get; set; }
 
 
     }

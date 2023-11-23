@@ -33,9 +33,9 @@ namespace GuideMeServerMVC.Utils
                         try
                         {
                             var usuarioEstabelecimento = await _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idUsuarioLogado);
-                            if (usuarioEstabelecimento != null)
+                            if (usuarioEstabelecimento != null && usuarioEstabelecimento.Id_Estabelecimento!=null)
                             {
-                                idEstabelecimento = usuarioEstabelecimento.Id_Estabelecimento;
+                                idEstabelecimento = (int)usuarioEstabelecimento.Id_Estabelecimento;
                                 if (string.IsNullOrEmpty(NomeEstabelecimento))
                                 {
                                     var estabelecimento = await _context.Estabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == usuarioEstabelecimento.Id_Estabelecimento);
@@ -85,9 +85,9 @@ namespace GuideMeServerMVC.Utils
                         try
                         {
                             var usuarioEstabelecimento = await _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == idUsuario);
-                            if (usuarioEstabelecimento != null)
+                            if (usuarioEstabelecimento != null && usuarioEstabelecimento.Id_Estabelecimento!=null)
                             {
-                                idEstabelecimento = usuarioEstabelecimento.Id_Estabelecimento;
+                                idEstabelecimento = (int)usuarioEstabelecimento.Id_Estabelecimento;
                                 if (string.IsNullOrEmpty(NomeEstabelecimento))
                                 {
                                     var estabelecimento = await _context.Estabelecimento.AsNoTracking().FirstOrDefaultAsync(x => x.Id == usuarioEstabelecimento.Id_Estabelecimento);
