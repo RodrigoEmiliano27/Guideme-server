@@ -1,0 +1,58 @@
+﻿@model List<ItensViewModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<h2 style="text-align: center">Relação de Itens Cadastrados</h2>
+
+<div style="text-align: center; margin-top:16px">
+    <a class="btn btn-primary rounded-pill px-3" href="/Itens/Create">Novo Registro</a>
+</div>
+
+<table id="tblTags" class="table-responsive table-striped" style="text-align: center; width:100%; margin-top:16px">
+    <thead>
+        <tr>
+            <th>Tag</th>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th>Ações</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (ItensViewModel a in Model)
+        {
+            <tr>
+                <td>@a.TAG_id</td>
+                <td>@a.Nome</td>
+                <td>@a.Descricao</td>
+                <td>
+                    <a class="btn btn-info" style="background-color:#0096c7; color:#FFF" href="Itens/Edit?id=@a.Id">Editar</a>
+                    <a href="javascript:apagarRegistro(@a.Id, 'Itens')" class="btn btn-danger">Apagar</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<style>
+    tbody tr:nth-child(odd) {
+        background-color: #ade8f4;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #caf0f8;
+    }
+
+    tbody tr {
+        background-image: url(noise.png);
+    }
+
+    table {
+        background-color: #00b4d8;
+        border-collapse: collapse;
+        border: 1px solid #0C2D48;
+    }
+
+    th, td {
+        border: 1px solid #03045e;
+        padding: 5px;
+    }
+</style>

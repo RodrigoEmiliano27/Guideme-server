@@ -8,113 +8,214 @@ using System.Diagnostics;
 using Newtonsoft.Json;
 using GuideMeServerMVC.Enum;
 using Microsoft.EntityFrameworkCore;
+using System.Runtime.Intrinsics.Arm;
+using Azure;
+using GuideMeServerMVC.Utils;
+using System;
+using Microsoft.AspNetCore.Mvc.Filters;
+using System.Reflection;
+using GuideMeServerMVC.Services;
 //using GuideMeServerMVC.Utils;
 
 namespace GuideMeServerMVC.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TagController : Controller
+    public class TagController : ControllerAutenticado<LugaresViewModel>
     {
         private readonly GuidemeDbContext _context;
+        private readonly TagService _service;
+        private readonly TagsPaiService _serviceTagsPai;
         public TagController(GuidemeDbContext context)
         {
             _context = context;
+            _service = new TagService(_context);
+            _serviceTagsPai = new TagsPaiService(_context);
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+
+            try
+            {
+                return View("TagsEstabelecimento", await _service.GetTagsUsuario((int)_UsuarioLogado));
+            }
+             catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
         }
 
-        //[HttpGet(Name = "GetWeatherForecast"), Authorize]
-        //https://localhost:7048/api/Tag/tag?id=1
-        /*[HttpGet("tag"), Authorize]
-        public TagViewModel GetTag(string id)
+      
+
+
+        protected virtual void ValidaDados(CadastrarAssociacaoTagsTO model,out TagViewModel _menorTag,out TagViewModel _maiorTag)
         {
-            return Ok("TESTE");
-        }*/
-        [Authorize(Roles = "app")]
-        [HttpGet("GetTagData")]
-        public ActionResult<object> GetData(string TagID)
+            ModelState.Clear();
+            _menorTag = null;
+            _maiorTag = null;
+            var erros =_service.ValidarDadosAssociacaoTags(model,out _menorTag,out _maiorTag);
+            if (erros != null && erros.Count > 0)
+            {
+                foreach (KeyValuePair<string, string> erro in erros)
+                    ModelState.AddModelError(erro.Key, erro.Value);
+
+            }
+
+        }
+
+        public async Task<IActionResult> SaveAssociacaoTags(CadastrarAssociacaoTagsTO model)
         {
             try
             {
-                var tagInfo = _context.Tags.FirstOrDefault(x => x.TagId.Equals(TagID));
 
-                if (tagInfo == null)
-                    return Ok("Not Found");
+                VerificaUserLogado();
+ 
+                TagViewModel menorTag = null, maiorTag=null;
 
-                List<TagViewModel> listaTags = 
-                    _context.Tags.Where(x => x.EstabelecimentoId == tagInfo.EstabelecimentoId).ToList();
+                ValidaDados(model, out menorTag, out maiorTag);
 
-                List<LugaresViewModel> lista = new List<LugaresViewModel>();
-
-                foreach (TagViewModel tag in listaTags)
+                if (ModelState.IsValid == false)
+                    return View("AssociarTags", await _service.GetDadosCadastroAssociacao(HelperControllers.GetUserLogadoID(HttpContext.Session)));
+                else
                 {
-                    tag.TagsPai = _context.TagsPai.Where(x => x.Id_Tag == tag.Id).ToList();
-                    var lugar = _context.Lugares.FirstOrDefault(x => x.TAG_id == tag.Id);
-                    if (lugar != null)
-                        lista.Add(lugar);
+                    await _service.SalvarAssociacao(model, menorTag, maiorTag);
+
+                    return View("TagsEstabelecimento", await _service.GetTagsUsuario((int)_UsuarioLogado));
                 }
-
-                TagsDataTO data = new TagsDataTO();
-                data.Tags = listaTags;
-                data.Lugares = lista;
-                    
-
-                return Ok(data);
             }
             catch (Exception err)
             {
-                return Ok("");
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
         }
-        [Authorize(Roles = "estabelecimento")]
-        [HttpPost("v1/SalvarTag")]
-        public async Task<IActionResult> SalvaTag([FromBody] TagTO tagTO)
+
+        public async Task<IActionResult> VisualizarRelacionamentos(int Id)
         {
             try
             {
-                TagViewModel tagmodel = new TagViewModel();
-                var tagInfo = _context.Tags.AsNoTracking().FirstOrDefault(x => x.TagId.Equals(tagTO.TagID));
+                ContainerAssociacaoTagsTO container = await _service.GetAssociacoesTag(Id);
 
-                if (tagInfo != null)
+                if(container != null)
+                    return View("RelacionamentoTags", container);
+
+                return View("TagsEstabelecimento", await _service.GetTagsUsuario((int)_UsuarioLogado));
+                
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+        }
+
+
+        public virtual async Task<IActionResult> TelaEditar(int Id)
+        {
+
+            try
+            {
+                Debug.WriteLine("TelaEditar");
+                var tag = _context.Tags.FirstOrDefault(o => o.Id == Id);
+                if (tag != null)
                 {
-                    if (tagInfo.EstabelecimentoId != tagTO.IdEstabelecimento)
-                        return StatusCode(StatusCodes.Status401Unauthorized);
-
-                    tagmodel.Id = tagInfo.Id;
-                    tagmodel.Nome = tagTO.TagName;
-                    tagmodel.tipoTag = tagInfo.tipoTag;
-                    tagmodel.TagId = tagInfo.TagId;
-
-                    _context.Update(tagmodel);
-                    await _context.SaveChangesAsync();
-
-                    return Ok(JsonConvert.SerializeObject(tagmodel));
+                    return View("EditarTag", tag);
                 }
                 else
                 {
-                    tagmodel.Nome = tagTO.TagName;
-                    tagmodel.tipoTag = (int)EnumTipoTag.NaoCadastrada;
-                    tagmodel.TagId = tagTO.TagID;
-                    tagmodel.EstabelecimentoId=tagTO.IdEstabelecimento;
-
-                    await _context.AddAsync(tagmodel);
-                    await _context.SaveChangesAsync();
-
-                    return Ok(JsonConvert.SerializeObject(tagmodel));
+                    return NotFound();
                 }
-             
             }
             catch (Exception err)
             {
-                return StatusCode(StatusCodes.Status500InternalServerError,err.ToString());
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
             }
-
-            return BadRequest();
+            
         }
 
-        
+        public async Task<IActionResult> ExibirTagsEstabelecimento()
+        {
+
+            try
+            {
+                Debug.WriteLine("Listando Tags");
+                return View("TagsEstabelecimento", await _service.GetTagsUsuario((int)_UsuarioLogado));
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+        }
+
+        public virtual async Task<IActionResult> UpdateTag([FromForm] TagViewModel model)
+        {
+
+            try
+            {
+                await _service.UpdateAsync(model);
+                return View("TagsEstabelecimento", await _service.GetTagsUsuario((int)_UsuarioLogado));
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+           
+        }
+
+
+        public async Task<IActionResult> Delete(int id)
+        {
+
+            try
+            {
+               await _service.Delete(id,(int)_UsuarioLogado);
+
+                return RedirectToAction("ExibirTagsEstabelecimento", "Tag");
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+
+           
+        }
+        public async Task<IActionResult> DeleteRelacionamento(int idTagPrincipal, int idTagSecundaria)
+        {
+
+            try
+            {
+               await _serviceTagsPai.DeletarRelacionamentos(idTagPrincipal, idTagSecundaria);
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+            return RedirectToAction("ExibirTagsEstabelecimento", "Tag");
+
+        }
+        public async Task<IActionResult> AssociarTags()
+        {
+            try
+            {
+                return View("AssociarTags", await  _service.GetDadosCadastroAssociacao(HelperControllers.GetUserLogadoID(HttpContext.Session)));
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+        }
+
+     
     }
+   
+
 }

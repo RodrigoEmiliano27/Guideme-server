@@ -1,0 +1,40 @@
+﻿@using  GuideMeServerMVC.TO
+@model CadastrarAssociacaoTagsTO
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="text-align: center">Associação de Tags</h2>
+        </div>
+        <div class="card-body" style="margin-top:16px">
+            <form asp-action="SaveAssociacaoTags" method="post">
+                <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
+                <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
+
+                <label for="TagPrincipalSelecionada" class="control-label">Tag principal</label>
+                <select asp-for="TagPrincipalSelecionada" asp-items="@Model.TagsDiponiveis" class="form-control"> </select>
+                <span asp-validation-for="TagPrincipalSelecionada" class="text-danger"></span>
+                <br />
+
+                <label for="TagPrincipalSecundaria" class="control-label">Tag Secundaria</label>
+                <select asp-for="TagSecundariaSelecionada" asp-items="@Model.TagsDiponiveis" class="form-control"> </select>
+                <span asp-validation-for="TagSecundariaSelecionada" class="text-danger"></span>
+                <br />
+
+                <label for="DirecaoSelecionada" class="control-label">Tag Secundaria</label>
+                <select asp-for="DirecaoSelecionada" asp-items="@Model.DirecoesDisponiveis" class="form-control"> </select>
+                <span asp-validation-for="DirecaoSelecionada" class="text-danger"></span>
+                <br />
+
+                <div class="form-group text-center">
+                    <input type="submit" value="Associar Tags" class="btn btn-primary rounded-pill px-3" />
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="#" onclick='javascript:history.back(-1);' class="btn btn-secondary rounded-pill px-3">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+

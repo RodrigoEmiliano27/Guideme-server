@@ -1,0 +1,47 @@
+﻿@using GuideMeServerMVC.Models
+@model TagViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml"; //enctype="multipart/form-data"
+}
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-header">
+                <h2 style="text-align: center">Edição de Tag</h2>
+            </div>
+
+            <div class="card-body" style="margin-top:16px">
+                <form asp-action="UpdateTag" method="post">
+                    <div class="row g-3">
+                        <div class="col-sm-12">
+                            <input type="text" Name="TagId" value="@Model.TagId" class="form-control" style="display: none;" />
+                            <span asp-validation-for="TagId" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12">
+                            <input type="text" Name="EstabelecimentoId" value="@Model.EstabelecimentoId" class="form-control" style="display: none;" />
+                            <span asp-validation-for="EstabelecimentoId" class="text-danger"></span>
+                        </div>
+                        <div class="col-sm-12">
+                            <input type="text" Name="tipoTag" value="@Model.tipoTag" class="form-control" style="display: none;" />
+                        </div>
+                        <div class="col-sm-12">
+                            <label for="Nome" class="form-label">Nome</label>
+                            <input type="text" Name="Nome" value="@Model.Nome" class="form-control" />
+                            <span asp-validation-for="Nome" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <input hidden type="text" Name="Id" value="@Model.Id" class="form-control" />
+                    <br />
+
+                    <div class="form-group text-center">
+                        <input type="submit" value="Salvar" class="btn btn-primary rounded-pill" />
+                        &nbsp;&nbsp;&nbsp;
+                        <a asp-controller="Tag" asp-action="ExibirTagsEstabelecimento" class="btn btn-secondary rounded-pill px-3">Voltar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</body>
+

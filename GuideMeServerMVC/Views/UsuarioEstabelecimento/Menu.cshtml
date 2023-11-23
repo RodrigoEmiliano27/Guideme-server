@@ -1,16 +1,45 @@
 ﻿@using GuideMeServerMVC.Models
 @model MenuViewModel
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+</head>
 <body>
-    <div>
-        <h2>Menu</h2>
+    <div class="container px-4 py-5">
+        <!-- <h2>Menu</h2> -->
         @if (Model.UsuarioEstabelecimento != null && Model.UsuarioEstabelecimento.Id_Estabelecimento >= 0)
         {
-            <p><b>Estabelecimento @Model.Estabelecimento.Nome</b></p>
-            <a asp-controller="Tag" asp-action="ExibirTagsEstabelecimento" class="btn-light">Exibir Tags</a>
+            <h2><b>Estabelecimento Atual: @Model.Estabelecimento.Nome</b></h2>
         }
-        else
-        {
-            <a asp-controller="Estabelecimento" asp-action="CadastrarEstabelecimento" class="btn-light">Cadastrar Estabelecimento</a>
-        }
+        <div class="row g-4 py-5 row-cols-1 row-cols-lg-3">
+            @if (Model.UsuarioEstabelecimento != null && Model.UsuarioEstabelecimento.Id_Estabelecimento >= 0)
+            {
+                <div class="feature col card" style="text-align:center; margin:8px; background-color:#caf0f8">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3" style="margin:8px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-bank" viewBox="0 0 16 16">
+                            <path d="m8 0 6.61 3h.89a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.5.5H15v7a.5.5 0 0 1 .485.38l.5 2a.498.498 0 0 1-.485.62H.5a.498.498 0 0 1-.485-.62l.5-2A.501.501 0 0 1 1 13V6H.5a.5.5 0 0 1-.5-.5v-2A.5.5 0 0 1 .5 3h.89L8 0ZM3.777 3h8.447L8 1 3.777 3ZM2 6v7h1V6H2Zm2 0v7h2.5V6H4Zm3.5 0v7h1V6h-1Zm2 0v7H12V6H9.5ZM13 6v7h1V6h-1Zm2-1V4H1v1h14Zm-.39 9H1.39l-.25 1h13.72l-.25-1Z" />
+                        </svg>
+                    </div>
+                    <div style="display:flex; flex-direction:column">
+                        <h3 class="fs-2 text-body-emphasis">Estabelecimentos</h3>
+                        <a asp-controller="Estabelecimento" asp-action="EditarEstabelecimento" class="btn-light">Editar Estabelecimento</a>
+                    </div>
+                </div>
+
+                <a asp-controller="Tag" asp-action="ExibirTagsEstabelecimento" class="feature col card" style="text-align:center; margin:8px; background-color:#caf0f8">
+                    <div class="feature-icon d-inline-flex align-items-center justify-content-center fs-2 mb-3" style="margin:8px">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" fill="currentColor" class="bi bi-tag" viewBox="0 0 16 16">
+                            <path d="M6 4.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0zm-1 0a.5.5 0 1 0-1 0 .5.5 0 0 0 1 0z" />
+                            <path d="M2 1h4.586a1 1 0 0 1 .707.293l7 7a1 1 0 0 1 0 1.414l-4.586 4.586a1 1 0 0 1-1.414 0l-7-7A1 1 0 0 1 1 6.586V2a1 1 0 0 1 1-1zm0 5.586 7 7L13.586 9l-7-7H2v4.586z" />
+                        </svg>
+                    </div>
+                        <h3 class="fs-2 text-body-emphasis">Tags</h3>                       
+                </a>
+            }
+            else
+            {
+                <a asp-controller="Estabelecimento" asp-action="CadastrarEstabelecimento" class="btn-light">Cadastrar Estabelecimento</a>
+            }
+        </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>

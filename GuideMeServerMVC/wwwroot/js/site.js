@@ -2,3 +2,38 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your JavaScript code.
+function apagarRegistro(id, controller) {
+
+    swal({
+        title: "Tem certeza?",
+        text: "O registro será apagado para sempre!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        cancelButtonClass: "btn-info",
+        confirmButtonText: "Sim",
+        cancelButtonText: "Não!",
+        closeOnConfirm: false
+    },
+        function () {
+            location.href = '/' + controller + '/Delete?id=' + id;
+        });
+}
+
+function apagarRegistroRelacionamentoTag(idTagPrincipal,idTagSecundaria, controller) {
+
+    swal({
+        title: "Tem certeza?",
+        text: "O registro será apagado para sempre!",
+        type: "warning",
+        showCancelButton: true,
+        confirmButtonClass: "btn-danger",
+        cancelButtonClass: "btn-info",
+        confirmButtonText: "Sim",
+        cancelButtonText: "Não!",
+        closeOnConfirm: false
+    },
+        function () {
+            location.href = '/' + controller + '/DeleteRelacionamento?idTagPrincipal=' + idTagPrincipal + '&idTagSecundaria=' + idTagSecundaria;
+        });
+}

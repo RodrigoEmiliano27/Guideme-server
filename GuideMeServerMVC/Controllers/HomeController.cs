@@ -1,32 +1,65 @@
-﻿using GuideMeServerMVC.Models;
+﻿using GuideMeServerMVC.Data;
+using GuideMeServerMVC.Models;
+using GuideMeServerMVC.Utils;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 using System.Diagnostics;
+using System.Reflection;
 
 namespace GuideMeServerMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly IConfiguration _configuration;
+        private readonly GuidemeDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(IConfiguration configuration, GuidemeDbContext context)
         {
-            _logger = logger;
+            _configuration = configuration;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            try
+            {
+                return View();
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+           
+
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Privacy()
         {
-            return View();
+            
+            try
+            {
+                return View();
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public async Task<IActionResult> Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
+
+        public override void OnActionExecuting(ActionExecutingContext context)
+        {
+            if (HelperControllers.VerificaUserLogado(HttpContext.Session))
+                ViewBag.Logado = true;
+              
+        }
+
     }
 }

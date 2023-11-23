@@ -1,0 +1,42 @@
+﻿@model ItensViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container">
+    <div class="card">
+        <div class="card-header">
+            <h2 style="text-align: center">Cadastro de Itens</h2>
+        </div>
+        <div class="card-body" style="margin-top:16px">
+            <form asp-action="Save" method="post">
+                <input type="hidden" name="Operacao" value="@ViewBag.Operacao" />
+                <input type="hidden" name="Itens" value="@Model.TagsDiponiveis" />
+
+                <input type="text" Name="Id" value="@Model.Id" class="form-control" style="display: none;" />
+
+                <label for="TagSelecionada" class="control-label">TAG</label>
+                <select asp-for="TAG_id" asp-items="@Model.TagsDiponiveis" class="form-control"> </select>
+                <span asp-validation-for="TAG_id" class="text-danger"></span>
+                <br />
+
+                <label for="Nome" class="control-label">Nome</label>
+                <input type="text" Name="Nome" value="@Model.Nome" class="form-control" />
+                <span asp-validation-for="Nome" class="text-danger"></span>
+                <br />
+
+                <label for="Descricao" class="control-label">Descrição</label>
+                <input type="text" Name="Descricao" value="@Model.Descricao" class="form-control" />
+                <span asp-validation-for="Descricao" class="text-danger"></span>
+                <br />
+
+                <div class="form-group text-center">
+                    <input type="submit" value="Salvar dados" class="btn btn-primary rounded-pill px-3" />
+                    &nbsp;&nbsp;&nbsp;
+                    <a href="#" onclick='javascript:history.back(-1);' class="btn btn-secondary rounded-pill px-3">Voltar</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+

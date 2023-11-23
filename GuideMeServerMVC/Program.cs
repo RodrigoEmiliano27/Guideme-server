@@ -36,7 +36,7 @@ namespace GuideMeServerMVC
 
             builder.Services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(10);
+                options.IdleTimeout = TimeSpan.FromMinutes(60);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
@@ -49,8 +49,9 @@ namespace GuideMeServerMVC
             //KeyVaultSecret kvs = secretClient.GetSecret("GuidemeWebAPPSecret");
 
 
-            // builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer(kvs.Value));
+            //builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer(kvs.Value));
             builder.Services.AddDbContext<GuidemeDbContext>(o => o.UseSqlServer("Server=tcp:guidemebdserver.database.windows.net,1433;Initial Catalog=guidemebd;Persist Security Info=False;User ID=guidemedbserveradm;Password=tccguideme1$;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"));
+
 
             var app = builder.Build();
 

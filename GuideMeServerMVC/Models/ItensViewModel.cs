@@ -5,10 +5,10 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GuideMeServerMVC.Models
 {
-    [Table("tbLugares")]
-    public class LugaresViewModel:BaseViewModel
+    [Table("tbItens")]
+    public class ItensViewModel:BaseViewModel
     {
-       
+        
         [Column("ID_TAG")]
         public int TAG_id { get; set; }
         [Column("NOME")]

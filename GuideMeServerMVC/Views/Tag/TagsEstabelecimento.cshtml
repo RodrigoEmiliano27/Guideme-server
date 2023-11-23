@@ -1,34 +1,175 @@
-﻿@using GuideMeServerMVC.Models
-@model UsuarioEstabelecimentoModel
+﻿@model List<TagViewModel> //
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <title>Lista de Tags do Estabelecimento</title>
+</head>
 <body>
-    <div>
-        <h2>Tags do Estabelecimento</h2>
-        <p>Listar as TAGS</p>
-        <form asp-action="CreateUsuario" method="post" enctype="multipart/form-data">
-            <label for="login" class="control-label">Login</label>
-            <input type="text" Name="Login" value="@Model.Login" class="form-control" />
-            <span asp-validation-for="Login" class="text-danger"></span>
-            <br />
+    <h2 style="text-align: center">Lista de Tags do Estabelecimento</h2>
 
-            <label for="senha" class="control-label">Senha</label>
-            <input type="password" Name="Senha" value="@Model.Senha" class="form-control" />
-            <span asp-validation-for="Senha" class="text-danger"></span>
-            <br />
-
-            <label for="admin" class="control-label">Admin?</label>
-            <input type="checkbox" name="Admin" value="true" checked />
-            <span asp-validation-for="Admin" class="text-danger"></span>
-            <br />
-
-            <input type="submit" value="Criar novo usuário" class="btn-info" />
-            &nbsp;&nbsp;&nbsp;
-            <a href="/Home/index" class="btn-light">Voltar</a>
-            <br />
-        </form>
+    <div style="text-align: center; margin-top:16px">
+        <a class="btn btn-primary rounded-pill px-3" href="/Tag/AssociarTags">Associar Tags</a>
     </div>
-</body>
+    
+    <table id="tblTags" class="table-responsive table-striped" style="text-align: center; width:100%; margin-top:16px">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Tag ID</th>
+                <th>Nome</th>
+                <th>Tipo de Tag</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tag in Model)
+            {
+                <tr>
+                    <td class="Id">
+                        <span>@tag.Id</span>
+                    </td>
+                    <td class="TagId">
+                        <span>@tag.TagId</span>
+                        <input type="text" value="@tag.TagId" style="display:none" />
+                    </td>
+                    <td class="Nome">
+                        <span>@tag.Nome</span>
+                        <input type="text" value="@tag.Nome" style="display:none" />
+                    </td>
+                    <td class="tipoTag">
+                        <span>@tag.tipoTag</span>
+                        <input type="number" value="@tag.tipoTag" style="display:none" />
+                    </td>
+                    <td>
+                        <a class="btn btn-info" style="background-color:#0096c7; color:#FFF" asp-controller="Tag" asp-action="TelaEditar" asp-route-id="@tag.Id">Editar</a> 
+                        <a href="javascript:apagarRegistro(@tag.Id, 'Tag')" class="btn btn-danger">Apagar</a> 
+                        <a class="btn btn-info" style="background-color:#0077b6; color:#FFF" asp-controller="Tag" asp-action="VisualizarRelacionamentos" asp-route-id="@tag.Id">Visualizar tags relacionadas</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    
+    <!-- Adicione aqui elementos HTML adicionais, como botões ou links -->
+    <a asp-controller="UsuarioEstabelecimento" asp-action="Index" class="btn btn-secondary rounded-pill px-3" style="margin-top:16px" >Voltar</a>
 
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/json2/20110223/json2.js"></script>
+    <script type="text/javascript">
+        //Delete event handler.
+        $("body").on("click", "#tblTags .Delete", function () {
+            console.log("Delete event fired!");
+                if (confirm("Do you want to delete this row?")) {
+                    var row = $(this).closest("tr");
+                    var Id = row.find("span").html();
+                    console.log("Id: " + Id);
+                    $.ajax({
+                        type: "POST",
+                        url: '@Url.Action("DeleteTag", "Tag")',
+                        data: JSON.stringify({ Id: Id }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: function (response) {
+                            if ($("#tblTags tr").length > 2) {
+                                row.remove();
+                            } else {
+                                //row.find(".Edit").hide();
+                                row.find(".Delete").hide();
+                                row.find("span").html('&nbsp;');
+                            }
+                        }
+                    });
+                }
+            });
+        //Edit event handler.
+        $("body").on("click", "#tblTags .Edit", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    $(this).find("input").show();
+                    $(this).find("span").hide();
+                }
+            });
+            row.find(".Update").show();
+            row.find(".Cancel").show();
+            row.find(".Delete").hide();
+            $(this).hide();
+        });
+        //Update event handler.
+        $("body").on("click", "#tblTags .Update", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    var span = $(this).find("span");
+                    var input = $(this).find("input");
+                    span.html(input.val());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Cancel").hide();
+            $(this).hide();
+
+            var tag = {};
+            tag.Id = row.find(".Id").find("span").html();
+            tag.TagId = row.find(".TagId").find("span").html();
+            tag.Nome = row.find(".Nome").find("span").html();
+            tag.tipoTag = row.find(".tipoTag").find("span").html();
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("DeleteTag", "Tag")',
+                data: JSON.stringify({ Id: tag.Id, TagId: tag.TagId, Nome: tag.Nome, tipoTag: tag.tipoTag }),
+                //data: '{tag:' + JSON.stringify(tag) + '}',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json"
+            });
+        });
+        //Cancel event handler.
+        $("body").on("click", "#tblTags .Cancel", function () {
+            var row = $(this).closest("tr");
+            $("td", row).each(function () {
+                if ($(this).find("input").length > 0) {
+                    var span = $(this).find("span");
+                    var input = $(this).find("input");
+                    input.val(span.html());
+                    span.show();
+                    input.hide();
+                }
+            });
+            row.find(".Edit").show();
+            row.find(".Delete").show();
+            row.find(".Update").hide();
+            $(this).hide();
+        });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+</body>
+<style>
+    tbody tr:nth-child(odd) {
+        background-color: #ade8f4;
+    }
+
+    tbody tr:nth-child(even) {
+        background-color: #caf0f8;
+    }
+
+    tbody tr {
+        background-image: url(noise.png);
+    }
+
+    table {
+        background-color: #00b4d8;
+        border-collapse: collapse;
+        border: 1px solid #0C2D48;
+    }
+
+    th, td {
+        border: 1px solid #03045e;
+        padding: 5px;
+    }
+</style>
