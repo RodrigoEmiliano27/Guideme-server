@@ -35,8 +35,13 @@ namespace GuideMeServerMVC.Controllers
                 var lugarService = new LugarService(_context);
                 var itenService = new ItensService(_context);
                 var tagService = new TagService(_context);
+                string nome = "";
 
                 var tagInfo = _context.Tags.FirstOrDefault(x => x.TagId.Equals(TagID));
+
+                var estab = _context.Tags.AsNoTracking().FirstOrDefault(x => x.TagId.Equals(TagID));
+                if (estab != null)
+                    nome = estab.Nome;
 
                 if (tagInfo == null)
                     return NotFound();
@@ -95,6 +100,7 @@ namespace GuideMeServerMVC.Controllers
                 data.Lugares = lista;
                 data.Itens = itens;
                 data.Tags = listaTagsNavegaveis;
+                data.NomeEstabelecimento = nome;
 
 
                 return Ok(data);
