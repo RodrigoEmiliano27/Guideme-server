@@ -27,7 +27,7 @@ namespace GuideMeServerMVC.Controllers
         }
 
        
-        public override async Task<IActionResult> Index()
+        public async Task<IActionResult> Index()
         {
 
             try

@@ -23,7 +23,42 @@ namespace GuideMeServerMVC.Controllers
 
         }
 
-       
+
+        public async Task<IActionResult> Index()
+        {
+            try
+            {
+                int idUsuario = HelperControllers.GetUserLogadoID(HttpContext.Session);
+
+                if (idUsuario != 0)
+                {
+                    List<ItensViewModel> itens = new List<ItensViewModel>();
+                    var _user = _context.UsuariosEstabelecimento.AsNoTracking().FirstOrDefault(x => x.Id == idUsuario);
+                    if (_user != null)
+                    {
+
+                        var tagItem = _context.Tags.Where(o => o.EstabelecimentoId == _user.Id_Estabelecimento && o.tipoTag == (int)EnumTipoTag.lugar).ToList();
+                        foreach (var tag in tagItem)
+                        {
+                            var item = _context.Itens.AsNoTracking().FirstOrDefault(x => x.TAG_id == tag.Id);
+                            if (item != null)
+                                itens.Add(item);
+
+                        }
+                    }
+                    return View("Index", itens);
+                }
+
+                return RedirectToAction("Home", "index");
+
+            }
+            catch (Exception err)
+            {
+                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
+                return View("Error", new ErrorViewModel(err.ToString()));
+            }
+
+        }
 
 
 
