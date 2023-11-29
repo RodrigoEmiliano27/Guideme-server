@@ -13,20 +13,7 @@ namespace GuideMeServerMVC.Controllers
         protected GuidemeDbContext _context;
         protected ServiceBase<T> _service;
 
-        public async virtual Task<IActionResult> Index()
-        {
-            try
-            {
-                return View("Index", await _service.GetAll());
-            }
-            catch (Exception err)
-            {
-                _ = HelperControllers.LoggerErro(HttpContext.Session, _context, this.GetType().Name, MethodBase.GetCurrentMethod().Name, err);
-                return View("Error", new ErrorViewModel(err.ToString()));
-            }
-
-        }
-
+        
 
 
         public virtual void ProcessaErros(Dictionary<string, string> erros)
