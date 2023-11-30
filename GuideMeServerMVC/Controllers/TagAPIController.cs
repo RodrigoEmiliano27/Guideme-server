@@ -129,6 +129,7 @@ namespace GuideMeServerMVC.Controllers
                     tagmodel.Nome = tagTO.TagName;
                     tagmodel.tipoTag = tagInfo.tipoTag;
                     tagmodel.TagId = tagInfo.TagId;
+                    tagmodel.EstabelecimentoId = tagInfo.EstabelecimentoId;
 
                     _context.Update(tagmodel);
                     await _context.SaveChangesAsync();
